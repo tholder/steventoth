@@ -1,0 +1,622 @@
+<!doctype html>
+<!--
+  Steven Toth intro video, composed as a deterministic HTML timeline.
+  Open in a browser to preview (it plays in real time), or run render.mjs to export MP4/WebM.
+  window.renderAt(seconds) draws an exact frame; window.DURATION is the length in seconds.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Steven Toth intro</title>
+    <style>
+      @font-face {
+        font-family: 'Fraunces';
+        src: url('../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-full-normal.woff2') format('woff2');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+        font-weight: 100 900;
+      }
+      :root {
+        --ink: #17291f;
+        --ink-soft: #45594c;
+        --forest: #2c6a4a;
+        --forest-deep: #143726;
+        --night: #0e2218;
+        --mist: #e2ecd8;
+        --paper: #f4f8ee;
+        --fern: #3f7f32;
+        --fern-light: #a9d18e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        background: #000;
+      }
+      #stage {
+        position: relative;
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        background: var(--mist);
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--ink);
+      }
+      .scene,
+      .layer {
+        position: absolute;
+        inset: 0;
+      }
+      [data-k] {
+        will-change: transform, opacity;
+      }
+      .serif {
+        font-family: 'Fraunces', Georgia, serif;
+        font-variation-settings: 'SOFT' 50, 'opsz' 96;
+        letter-spacing: -0.015em;
+      }
+      .eyebrow {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--fern);
+      }
+      svg {
+        display: block;
+      }
+
+      /* Scene A: rainforest opener */
+      #a {
+        background: linear-gradient(180deg, #c9d8c8 0%, #dfe9d6 55%, #e6efdc 100%);
+      }
+      #a .copy {
+        position: absolute;
+        left: 96px;
+        top: 150px;
+      }
+      #a h1 {
+        margin: 18px 0 0;
+        font-size: 84px;
+        line-height: 1.02;
+        font-weight: 560;
+        color: var(--ink);
+      }
+      #a h1 span {
+        display: inline-block;
+      }
+      #a .sub {
+        margin-top: 22px;
+        font-size: 30px;
+        color: var(--forest);
+      }
+      #rain {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* Scene B: meet Steven */
+      #b {
+        background: linear-gradient(180deg, #e6efdc 0%, #d3e3c7 100%);
+      }
+      #b .photo {
+        position: absolute;
+        right: 120px;
+        top: 70px;
+        width: 400px;
+        height: 520px;
+        border-radius: 200px 200px 28px 28px;
+        overflow: hidden;
+        box-shadow: 0 40px 80px -30px rgb(20 45 30 / 0.55);
+        background: #cfdcc8;
+      }
+      #b .photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 28%;
+      }
+      #b .copy {
+        position: absolute;
+        left: 96px;
+        top: 130px;
+        width: 620px;
+      }
+      #b h2 {
+        margin: 16px 0 6px;
+        font-size: 76px;
+        font-weight: 560;
+        line-height: 1.02;
+      }
+      #b .role {
+        font-size: 24px;
+        color: var(--ink-soft);
+      }
+      #b ul {
+        list-style: none;
+        margin: 40px 0 0;
+        padding: 0;
+      }
+      #b li {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 26px;
+        margin-bottom: 18px;
+        font-weight: 500;
+      }
+      #b li i {
+        flex: none;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--forest-deep);
+        display: grid;
+        place-items: center;
+      }
+
+      /* Scene C: Kitsilano */
+      #c {
+        background: linear-gradient(180deg, #cfdccf 0%, #e6ede0 60%, #eef2e6 100%);
+      }
+      #c .copy {
+        position: absolute;
+        left: 96px;
+        top: 80px;
+      }
+      #c h2 {
+        margin: 14px 0 0;
+        font-size: 74px;
+        font-weight: 560;
+        line-height: 1.02;
+      }
+      #c .chips {
+        position: absolute;
+        left: 96px;
+        top: 285px;
+        display: flex;
+        gap: 12px;
+      }
+      #c .chip {
+        padding: 12px 22px;
+        border-radius: 999px;
+        background: rgb(255 255 255 / 0.85);
+        font-size: 21px;
+        font-weight: 600;
+        color: var(--forest-deep);
+        box-shadow: 0 8px 20px -10px rgb(20 45 30 / 0.4);
+      }
+
+      /* Scene D: services */
+      #d {
+        background: var(--forest-deep);
+        color: var(--mist);
+      }
+      #d .eyebrow {
+        color: var(--fern-light);
+      }
+      #d .copy {
+        position: absolute;
+        left: 96px;
+        top: 96px;
+      }
+      #d h2 {
+        margin: 14px 0 0;
+        font-size: 66px;
+        font-weight: 560;
+        color: var(--mist);
+      }
+      #d .cards {
+        position: absolute;
+        left: 96px;
+        right: 96px;
+        top: 330px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+      }
+      #d .card {
+        background: var(--paper);
+        color: var(--ink);
+        border-radius: 22px;
+        padding: 28px 26px 30px;
+        min-height: 220px;
+      }
+      #d .card b {
+        display: block;
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 30px;
+        font-weight: 560;
+        margin-bottom: 10px;
+      }
+      #d .card span {
+        font-size: 19px;
+        line-height: 1.45;
+        color: var(--ink-soft);
+      }
+      #d .num {
+        font-family: 'Fraunces', Georgia, serif;
+        color: var(--fern);
+        font-size: 24px;
+        margin-bottom: 18px;
+        display: block;
+      }
+
+      /* Scene E: call to action */
+      #e {
+        background: linear-gradient(180deg, #e6efdc 0%, #cfe0c3 100%);
+      }
+      #e .copy {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 118px;
+        text-align: center;
+      }
+      #e .avatar {
+        width: 132px;
+        height: 132px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto 26px;
+        border: 5px solid #fff;
+        box-shadow: 0 20px 40px -18px rgb(20 45 30 / 0.5);
+      }
+      #e .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 25%;
+      }
+      #e h2 {
+        margin: 0;
+        font-size: 66px;
+        font-weight: 560;
+        line-height: 1.06;
+      }
+      #e .contact {
+        margin-top: 30px;
+        display: inline-flex;
+        gap: 18px;
+        align-items: center;
+      }
+      #e .pill {
+        padding: 16px 30px;
+        border-radius: 999px;
+        font-size: 26px;
+        font-weight: 600;
+      }
+      #e .pill.solid {
+        background: var(--fern);
+        color: #fff;
+      }
+      #e .pill.line {
+        border: 2px solid var(--ink);
+      }
+      #e .sig {
+        margin-top: 22px;
+        font-size: 19px;
+        color: var(--ink-soft);
+        letter-spacing: 0.04em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <!-- A -->
+      <section class="scene" id="a" data-k="a">
+        <svg class="layer" data-k="a-far" viewBox="0 0 1280 720" preserveAspectRatio="none">
+          <path d="M0 470 L110 360 L190 410 L300 300 L410 400 L500 350 L590 410 L700 290 L800 380 L870 340 L980 420 L1080 320 L1180 390 L1280 350 V720 H0Z" fill="#9db9a3" />
+        </svg>
+        <div class="layer" data-k="a-mist" style="left: -160px; right: -160px; background: linear-gradient(180deg, transparent 52%, rgb(240 245 234 / 0.75) 62%, transparent 72%)"></div>
+        <svg class="layer" data-k="a-mid" viewBox="0 0 1280 720" preserveAspectRatio="none">
+          <path d="M0 540 L140 450 L240 500 L360 420 L490 510 L600 460 L720 520 L850 440 L960 510 L1080 460 L1180 500 L1280 470 V720 H0Z" fill="#4f7d61" />
+        </svg>
+        <svg class="layer" id="a-trees" viewBox="0 0 1280 720"><rect data-k="a-floor" x="0" y="596" width="1280" height="124" fill="#24503a" /></svg>
+        <canvas id="rain" width="1280" height="720"></canvas>
+        <div class="copy">
+          <div class="eyebrow" data-k="a-eyebrow">Vancouver, British Columbia</div>
+          <h1 class="serif">
+            <span data-k="a-w1">Mountains.</span> <span data-k="a-w2">Ocean.</span><br /><span data-k="a-w3">Rainforest.</span>
+          </h1>
+          <div class="sub serif" data-k="a-sub">And a place to call home.</div>
+        </div>
+      </section>
+
+      <!-- B -->
+      <section class="scene" id="b" data-k="b">
+        <div class="photo" data-k="b-photo"><img src="../src/assets/steven-toth.webp" alt="" /></div>
+        <div class="copy">
+          <div class="eyebrow" data-k="b-eyebrow">Meet your REALTOR®</div>
+          <h2 class="serif" data-k="b-name">Steven Toth</h2>
+          <div class="role" data-k="b-role">Personal Real Estate Corporation · Macdonald Realty</div>
+          <ul>
+            <li data-k="b-f1"><i><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3L12.5 5" fill="none" stroke="#a9d18e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></i>Born &amp; raised on Vancouver’s Westside</li>
+            <li data-k="b-f2"><i><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3L12.5 5" fill="none" stroke="#a9d18e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></i>UBC grad, travelled &amp; lived overseas</li>
+            <li data-k="b-f3"><i><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3L12.5 5" fill="none" stroke="#a9d18e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg></i>Lives in Kitsilano with his family</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- C -->
+      <section class="scene" id="c" data-k="c">
+        <svg class="layer" viewBox="0 0 1280 720" preserveAspectRatio="none">
+          <circle data-k="c-sun" cx="1010" cy="250" r="70" fill="#f6f4df" />
+          <path d="M0 470 L160 380 L270 430 L420 330 L560 420 L690 360 L840 440 L960 380 L1100 430 L1280 390 V720 H0Z" fill="#8fae98" />
+          <defs><linearGradient id="mistband" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3f6ee" stop-opacity="0" /><stop offset="0.5" stop-color="#f3f6ee" /><stop offset="1" stop-color="#f3f6ee" stop-opacity="0" /></linearGradient></defs>
+          <rect data-k="c-mist" x="-200" y="385" width="1680" height="80" fill="url(#mistband)" />
+          <path d="M0 510 L190 450 L330 490 L500 430 L660 500 L830 455 L1000 505 L1150 470 L1280 495 V720 H0Z" fill="#4f7d61" />
+        </svg>
+        <svg class="layer" id="c-shore" viewBox="0 0 1280 720"></svg>
+        <svg class="layer" viewBox="0 0 1280 720">
+          <defs>
+            <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#3f7a66" />
+              <stop offset="1" stop-color="#143726" />
+            </linearGradient>
+          </defs>
+          <rect y="540" width="1280" height="120" fill="url(#water)" />
+          <g id="c-waves" stroke="#a9d1bc" stroke-width="3" stroke-linecap="round" opacity="0.5"></g>
+          <g data-k="c-boat">
+            <path d="M0 -70 L0 0 L-46 0Z" fill="#f7f9f2" />
+            <path d="M6 -60 L6 0 L44 0Z" fill="#7fb35a" />
+            <path d="M-56 6 H52 L40 22 H-44Z" fill="#0e2218" />
+          </g>
+          <path d="M0 650 C260 628 560 664 1280 636 V720 H0Z" fill="#e4dcc2" />
+        </svg>
+        <svg class="layer" id="c-front" viewBox="0 0 1280 720"></svg>
+        <div class="copy">
+          <div class="eyebrow" data-k="c-eyebrow">Home base</div>
+          <h2 class="serif" data-k="c-title">Kitsilano, every day.</h2>
+        </div>
+        <div class="chips">
+          <span class="chip" data-k="c-ch1">Kits Beach</span>
+          <span class="chip" data-k="c-ch2">Kits Pool</span>
+          <span class="chip" data-k="c-ch3">West 4th</span>
+          <span class="chip" data-k="c-ch4">Arbutus Greenway</span>
+        </div>
+      </section>
+
+      <!-- D -->
+      <section class="scene" id="d" data-k="d">
+        <svg class="layer" viewBox="0 0 1280 720" preserveAspectRatio="none" style="opacity: 0.35">
+          <path d="M0 640 L160 560 L300 610 L450 540 L620 620 L780 560 L940 630 L1100 570 L1280 610 V720 H0Z" fill="#0b1f15" />
+        </svg>
+        <div class="copy">
+          <div class="eyebrow" data-k="d-eyebrow">How I can help</div>
+          <h2 class="serif" data-k="d-title">Your move, done right.</h2>
+        </div>
+        <div class="cards">
+          <div class="card" data-k="d-c1"><span class="num">01</span><b>Buying</b><span>From first condo to forever home.</span></div>
+          <div class="card" data-k="d-c2"><span class="num">02</span><b>Selling</b><span>Smart pricing and standout marketing.</span></div>
+          <div class="card" data-k="d-c3"><span class="num">03</span><b>New to Vancouver</b><span>A local’s intro to the neighbourhoods.</span></div>
+          <div class="card" data-k="d-c4"><span class="num">04</span><b>Investing</b><span>Condo and strata know-how.</span></div>
+        </div>
+      </section>
+
+      <!-- E -->
+      <section class="scene" id="e" data-k="e">
+        <svg class="layer" viewBox="0 0 1280 720" preserveAspectRatio="none">
+          <path data-k="e-far" d="M0 600 L130 520 L220 560 L350 480 L470 560 L580 515 L700 570 L820 490 L930 555 L1050 505 L1170 560 L1280 520 V720 H0Z" fill="#8fb39a" opacity="0.7" />
+          <path data-k="e-mid" d="M0 640 L160 580 L280 615 L420 560 L560 625 L700 585 L840 630 L980 590 L1120 625 L1280 600 V720 H0Z" fill="#3d6e50" opacity="0.7" />
+        </svg>
+        <svg class="layer" id="e-trees" viewBox="0 0 1280 720"></svg>
+        <div class="copy">
+          <div class="avatar" data-k="e-avatar"><img src="../src/assets/steven-toth.webp" alt="" /></div>
+          <h2 class="serif" data-k="e-title">Let’s find your place<br />in Vancouver.</h2>
+          <div class="contact" data-k="e-contact">
+            <span class="pill solid">778-238-7799</span>
+            <span class="pill line">steventoth.ca</span>
+          </div>
+          <div class="sig" data-k="e-sig">STEVEN TOTH · REALTOR® · MACDONALD REALTY</div>
+        </div>
+      </section>
+
+      <!-- Fade-to-start veil for a seamless loop -->
+      <div class="layer" data-k="veil" style="background: #c9d8c8"></div>
+    </div>
+
+    <script>
+      const DURATION = 26;
+      window.DURATION = DURATION;
+
+      // Seeded RNG so every render is identical.
+      let seed = 11;
+      const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+
+      const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+      const ease = {
+        linear: (x) => x,
+        out: (x) => 1 - Math.pow(1 - x, 3),
+        inOut: (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2),
+        back: (x) => 1 + 2.2 * Math.pow(x - 1, 3) + 1.2 * Math.pow(x - 1, 2),
+      };
+
+      // Keyframe tracks: [time, {o, x, y, s, sy, blur}, easing-into-this-key]
+      const DEF = { o: 1, x: 0, y: 0, s: 1, sy: 1, blur: 0 };
+      const tracks = {};
+      const track = (key, frames) => (tracks[key] = frames);
+      // Helpers for common in/out moves
+      const rise = (t0, dur = 0.8, dist = 40) => [
+        [t0, { o: 0, y: dist }],
+        [t0 + dur, { o: 1, y: 0 }, 'out'],
+      ];
+      const sceneSpan = (inAt, outAt, f = 0.7) => [
+        [inAt, { o: 0 }],
+        [inAt + f, { o: 1 }, 'inOut'],
+        [outAt - f, { o: 1 }],
+        [outAt, { o: 0 }, 'inOut'],
+      ];
+
+      // Scene timings (seconds)
+      const A = [0, 5.4], B = [4.8, 11.4], C = [10.8, 17.4], D = [16.8, 22], E = [21.4, 26];
+
+      track('a', [[0, { o: 1 }], [A[1] - 0.6, { o: 1 }], [A[1], { o: 0 }, 'inOut']]);
+      track('a-far', [[0, { y: 40, s: 1.04 }], [5.4, { y: 0, s: 1 }, 'out']]);
+      track('a-mid', [[0, { y: 70 }], [5.4, { y: 0 }, 'out']]);
+      track('a-mist', [[0, { x: -60, o: 0.6 }], [5.4, { x: 60, o: 1 }]]);
+      track('a-eyebrow', rise(0.5, 0.8, 20));
+      track('a-w1', rise(0.9, 0.7));
+      track('a-w2', rise(1.35, 0.7));
+      track('a-w3', rise(1.8, 0.7));
+      track('a-sub', rise(2.6, 0.9, 24));
+
+      track('b', sceneSpan(...B));
+      track('b-photo', [[B[0] + 0.2, { o: 0, x: 80, s: 1.05 }], [B[0] + 1.4, { o: 1, x: 0, s: 1 }, 'out'], [B[1], { s: 1.03 }]]);
+      track('b-eyebrow', rise(B[0] + 0.6, 0.7, 20));
+      track('b-name', rise(B[0] + 0.8, 0.8));
+      track('b-role', rise(B[0] + 1.1, 0.8, 20));
+      track('b-f1', [[B[0] + 1.9, { o: 0, x: -30 }], [B[0] + 2.5, { o: 1, x: 0 }, 'out']]);
+      track('b-f2', [[B[0] + 2.4, { o: 0, x: -30 }], [B[0] + 3.0, { o: 1, x: 0 }, 'out']]);
+      track('b-f3', [[B[0] + 2.9, { o: 0, x: -30 }], [B[0] + 3.5, { o: 1, x: 0 }, 'out']]);
+
+      track('c', sceneSpan(...C));
+      track('c-sun', [[C[0], { y: 30 }], [C[1], { y: -10 }]]);
+      track('c-mist', [[C[0], { x: -80, o: 0.6 }], [C[1], { x: 80, o: 0.6 }]]);
+      track('c-boat', [[C[0], { x: 260, y: 600 }], [C[1], { x: 820, y: 600 }]]);
+      track('c-eyebrow', rise(C[0] + 0.5, 0.7, 20));
+      track('c-title', rise(C[0] + 0.7, 0.8));
+      ['c-ch1', 'c-ch2', 'c-ch3', 'c-ch4'].forEach((k, i) =>
+        track(k, [[C[0] + 1.6 + i * 0.3, { o: 0, s: 0.7, y: 10 }], [C[0] + 2.1 + i * 0.3, { o: 1, s: 1, y: 0 }, 'back']]),
+      );
+
+      track('d', sceneSpan(...D));
+      track('d-eyebrow', rise(D[0] + 0.5, 0.7, 20));
+      track('d-title', rise(D[0] + 0.7, 0.8));
+      ['d-c1', 'd-c2', 'd-c3', 'd-c4'].forEach((k, i) =>
+        track(k, [[D[0] + 1.3 + i * 0.22, { o: 0, y: 60 }], [D[0] + 2.1 + i * 0.22, { o: 1, y: 0 }, 'out']]),
+      );
+
+      track('e', [[E[0], { o: 0 }], [E[0] + 0.7, { o: 1 }, 'inOut']]);
+      track('e-far', [[E[0], { y: 80, o: 0.7 }], [DURATION, { y: 50, o: 0.7 }, 'out']]);
+      track('e-mid', [[E[0], { y: 100, o: 0.7 }], [DURATION, { y: 50, o: 0.7 }, 'out']]);
+      track('e-avatar', [[E[0] + 0.5, { o: 0, s: 0.6 }], [E[0] + 1.2, { o: 1, s: 1 }, 'back']]);
+      track('e-title', rise(E[0] + 0.8, 0.8));
+      track('e-contact', rise(E[0] + 1.4, 0.8, 24));
+      track('e-sig', rise(E[0] + 1.9, 0.8, 16));
+      track('veil', [[0, { o: 0 }], [DURATION - 0.6, { o: 0 }], [DURATION, { o: 1 }, 'inOut']]);
+
+      const els = {};
+      document.querySelectorAll('[data-k]').forEach((el) => (els[el.dataset.k] = el));
+
+      function sample(frames, t) {
+        if (t <= frames[0][0]) return { ...DEF, ...frames[0][1] };
+        for (let i = 1; i < frames.length; i++) {
+          const [t1, v1, e = 'linear'] = frames[i];
+          const [t0, v0] = frames[i - 1];
+          if (t <= t1) {
+            const p = ease[e](clamp((t - t0) / (t1 - t0 || 1)));
+            const a = { ...DEF, ...v0 }, b = { ...DEF, ...v1 };
+            const out = {};
+            for (const k in DEF) out[k] = a[k] + (b[k] - a[k]) * p;
+            return out;
+          }
+        }
+        return { ...DEF, ...frames[frames.length - 1][1] };
+      }
+
+      // Procedural trees
+      function firs(svg, { x0, x1, base, hmin, hmax, color, gapMin = 7, gapMax = 14 }) {
+        const list = [];
+        let x = x0;
+        while (x < x1) {
+          const h = hmin + rand() * (hmax - hmin);
+          const w = h * (0.38 + rand() * 0.1);
+          const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          p.setAttribute('d', `M${-w / 2} 0 L0 ${-h} L${w / 2} 0Z`);
+          p.setAttribute('fill', color);
+          svg.appendChild(p);
+          list.push({ p, x, base, delay: rand() });
+          x += gapMin + rand() * (gapMax - gapMin);
+        }
+        return list;
+      }
+      const aTrees = [
+        ...firs(document.getElementById('a-trees'), { x0: -10, x1: 1300, base: 600, hmin: 50, hmax: 110, color: '#24503a', gapMin: 14, gapMax: 26 }),
+        ...firs(document.getElementById('a-trees'), { x0: -10, x1: 1300, base: 724, hmin: 120, hmax: 230, color: '#173a28', gapMin: 26, gapMax: 52 }),
+      ];
+      const cShore = firs(document.getElementById('c-shore'), { x0: -10, x1: 1290, base: 548, hmin: 26, hmax: 56, color: '#24503a' });
+      const cFront = [
+        ...firs(document.getElementById('c-front'), { x0: -20, x1: 150, base: 730, hmin: 120, hmax: 220, color: '#1f4a33', gapMin: 18, gapMax: 30 }),
+        ...firs(document.getElementById('c-front'), { x0: 1130, x1: 1300, base: 730, hmin: 120, hmax: 220, color: '#1f4a33', gapMin: 18, gapMax: 30 }),
+      ];
+      const eTrees = firs(document.getElementById('e-trees'), { x0: -10, x1: 1300, base: 724, hmin: 40, hmax: 95, color: '#1f4a33', gapMin: 10, gapMax: 20 });
+      const place = (list, grow) =>
+        list.forEach(({ p, x, base, delay }) => {
+          const g = grow == null ? 1 : ease.out(clamp(grow * 1.6 - delay * 0.6));
+          p.setAttribute('transform', `translate(${x} ${base}) scale(1 ${g.toFixed(4)})`);
+        });
+      place(cShore);
+      place(cFront);
+
+      const waves = document.getElementById('c-waves');
+      const waveData = Array.from({ length: 14 }, () => ({ x: rand() * 1400, y: 560 + rand() * 80, w: 40 + rand() * 70, v: 10 + rand() * 18 }));
+      waveData.forEach(() => waves.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path')));
+
+      const rain = document.getElementById('rain');
+      const rctx = rain.getContext('2d');
+      const drops = Array.from({ length: 140 }, () => ({ x: rand() * 1400, y: rand() * 720, l: 12 + rand() * 18, v: 700 + rand() * 500, a: 0.15 + rand() * 0.25 }));
+
+      function renderAt(t) {
+        for (const k in tracks) {
+          const el = els[k];
+          if (!el) continue;
+          const v = sample(tracks[k], t);
+          el.style.opacity = v.o.toFixed(4);
+          if (el instanceof SVGElement && !(el instanceof SVGSVGElement)) {
+            el.setAttribute('transform', `translate(${v.x} ${v.y}) scale(${v.s})`);
+          } else {
+            el.style.transform = `translate(${v.x}px, ${v.y}px) scale(${v.s}, ${v.s * v.sy})`;
+          }
+          const hidden = v.o < 0.001;
+          if (el.classList.contains('scene')) el.style.visibility = hidden ? 'hidden' : 'visible';
+        }
+
+        place(aTrees, clamp(t / 2.4));
+        place(eTrees, clamp((t - E[0] - 0.2) / 2));
+
+        // Gentle Vancouver drizzle
+        rctx.clearRect(0, 0, 1280, 720);
+        rctx.lineCap = 'round';
+        rctx.lineWidth = 1.6;
+        for (const d of drops) {
+          const y = ((d.y + t * d.v) % 820) - 60;
+          const x = (d.x - (t * d.v) * 0.18) % 1400;
+          rctx.strokeStyle = `rgba(255,255,255,${d.a})`;
+          rctx.beginPath();
+          rctx.moveTo(x, y);
+          rctx.lineTo(x - d.l * 0.18, y + d.l);
+          rctx.stroke();
+        }
+
+        waveData.forEach((w, i) => {
+          const x = ((w.x + t * w.v) % 1400) - 80;
+          waves.children[i].setAttribute('d', `M${x.toFixed(1)} ${w.y} h${w.w}`);
+        });
+      }
+      window.renderAt = renderAt;
+
+      window.ready = Promise.all([
+        document.fonts.ready,
+        ...[...document.images].map((img) => img.decode().catch(() => {})),
+      ]);
+
+      // Live preview when opened directly in a browser.
+      if (!navigator.webdriver) {
+        const start = performance.now();
+        const loop = () => {
+          renderAt(((performance.now() - start) / 1000) % DURATION);
+          requestAnimationFrame(loop);
+        };
+        window.ready.then(loop);
+      } else {
+        renderAt(0);
+      }
+    </script>
+  </body>
+</html>

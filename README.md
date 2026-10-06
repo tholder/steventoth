@@ -46,6 +46,18 @@ Only post photos and descriptions Steven has the rights to use: his own listings
 
 > **Why not pull listings from Zealty?** Zealty's terms prohibit scraping, extracting or redistributing listing data, and it's MLS® data owned by the boards. The legitimate way to automate this is a licensed feed: CREA's **DDF®** (free for REALTOR® members, covers Steven's own or his brokerage's listings) or a board-approved IDX provider through Macdonald Realty. Either can be wired into the same `properties` collection later with an Astro content loader.
 
+## Intro video
+
+The homepage "Meet Steven" video (`public/video/`) is generated from `video/intro.html`, an animated HTML timeline using the site's fonts, colours and headshot. Open that file in a browser to preview it live. To edit the text or timing and re-export the MP4, WebM and poster:
+
+```bash
+npm i --no-save playwright ffmpeg-static
+npx playwright install chromium
+node video/render.mjs
+```
+
+It's silent (so it can autoplay muted), plays only while on screen, has a pause button, and won't autoplay for visitors who prefer reduced motion. If Steven records a real talking-head clip later, drop it in `public/video/` with the same file names.
+
 ## Editing content
 
 - Contact details, brokerage and social links: `src/data/site.ts`

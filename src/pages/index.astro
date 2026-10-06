@@ -67,6 +67,18 @@ const faq = [
 
 const recent = (await getProperties()).slice(0, 3);
 
+const videoSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: 'Meet Steven Toth, Kitsilano REALTOR®',
+  description:
+    'A 26-second introduction to Steven Toth: born and raised on Vancouver’s Westside, living in Kitsilano, helping people buy and sell homes across Vancouver.',
+  thumbnailUrl: `${site.url}/video/steven-toth-intro-poster.jpg`,
+  contentUrl: `${site.url}/video/steven-toth-intro.mp4`,
+  uploadDate: '2026-10-06',
+  duration: 'PT26S',
+};
+
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -81,7 +93,7 @@ const faqSchema = {
 <Base
   title="Steven Toth | Kitsilano & Vancouver Westside REALTOR®"
   description="Steven Toth is a Kitsilano-based REALTOR® with Macdonald Realty, born and raised on Vancouver's Westside. Expert help buying and selling homes and condos in Kits, Point Grey, Dunbar, Kerrisdale and across Vancouver."
-  jsonLd={[faqSchema]}
+  jsonLd={[faqSchema, videoSchema]}
 >
   <section class="hero">
     <div class="container hero-grid">
@@ -128,6 +140,41 @@ const faqSchema = {
         <div><dt>Educated at</dt><dd>UBC</dd></div>
         <div><dt>Condo-trained</dt><dd>Condo 101 &amp; 202</dd></div>
       </dl>
+    </div>
+  </section>
+
+  <section class="section meet">
+    <div class="container meet-grid">
+      <div>
+        <span class="eyebrow">Meet Steven</span>
+        <h2>Vancouver, through a local’s eyes</h2>
+        <p class="lede">
+          Mountains, ocean, a lot of rain, and neighbourhoods I’ve known my whole life. Here’s a quick hello and a
+          look at how I can help.
+        </p>
+        <a class="btn btn--ghost" href="/about">More about Steven</a>
+      </div>
+      <figure class="video-frame">
+        <video
+          class="intro-video"
+          muted
+          loop
+          playsinline
+          preload="none"
+          width="1920"
+          height="1080"
+          poster="/video/steven-toth-intro-poster.jpg"
+          aria-label="Meet Steven Toth: an animated introduction to Steven, Kitsilano and his real estate services"
+        >
+          <source src="/video/steven-toth-intro.webm" type="video/webm" />
+          <source src="/video/steven-toth-intro.mp4" type="video/mp4" />
+        </video>
+        <button class="video-toggle" type="button" aria-pressed="false">
+          <span class="sr-only">Play video</span>
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"></path></svg>
+          <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"></path></svg>
+        </button>
+      </figure>
     </div>
   </section>
 
@@ -295,7 +342,98 @@ const faqSchema = {
   <CtaBand />
 </Base>
 
+<script>
+  const video = document.querySelector<HTMLVideoElement>('.intro-video');
+  const toggle = document.querySelector<HTMLButtonElement>('.video-toggle');
+  if (video && toggle) {
+    const label = toggle.querySelector('.sr-only')!;
+    let userPaused = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sync = () => {
+      const playing = !video.paused;
+      toggle.setAttribute('aria-pressed', String(playing));
+      toggle.classList.toggle('is-playing', playing);
+      label.textContent = playing ? 'Pause video' : 'Play video';
+    };
+    video.addEventListener('play', sync);
+    video.addEventListener('pause', sync);
+    toggle.addEventListener('click', () => {
+      if (video.paused) {
+        userPaused = false;
+        video.play().catch(() => {});
+      } else {
+        userPaused = true;
+        video.pause();
+      }
+    });
+    // Only play while on screen (and only start downloading when it's close).
+    new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !userPaused) video.play().catch(() => {});
+        else if (!entry.isIntersecting) video.pause();
+      },
+      { threshold: 0.4 },
+    ).observe(video);
+  }
+</script>
+
 <style>
+  .meet-grid {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .meet-grid {
+      grid-template-columns: 1fr 1.65fr;
+      gap: 56px;
+    }
+  }
+  .video-frame {
+    position: relative;
+    margin: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--mist);
+    box-shadow: 0 30px 60px -28px rgb(20 45 30 / 0.45);
+    aspect-ratio: 16 / 9;
+  }
+  .intro-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .video-toggle {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 0;
+    display: grid;
+    place-items: center;
+    background: rgb(14 34 24 / 0.72);
+    color: var(--white);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background 0.2s;
+  }
+  .video-toggle:hover {
+    background: var(--forest-deep);
+  }
+  .video-toggle svg {
+    width: 20px;
+    height: 20px;
+  }
+  .video-toggle .i-pause,
+  .video-toggle.is-playing .i-play {
+    display: none;
+  }
+  .video-toggle.is-playing .i-pause {
+    display: block;
+  }
+
   .hero {
     position: relative;
     background: linear-gradient(180deg, #e6efdc 0%, #cfe0c3 100%);
