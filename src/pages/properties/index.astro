@@ -1,0 +1,100 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import PropertyCard from '../../components/PropertyCard.astro';
+import { getProperties, isActive } from '../../lib/properties';
+import { site } from '../../data/site';
+
+const all = await getProperties();
+const active = all.filter(isActive);
+const past = all.filter((p) => !isActive(p));
+
+const itemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: all.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: p.data.address,
+    url: `${site.url}/properties/${p.id}`,
+  })),
+};
+---
+
+<Base
+  title="Recent Properties"
+  description="Current listings and recently sold homes from Steven Toth, REALTOR® in Kitsilano and across Vancouver's Westside."
+  jsonLd={all.length ? [itemList] : []}
+>
+  <PageHero
+    eyebrow="Properties"
+    title="Recent properties"
+    lede="Homes I’m currently marketing and ones I’ve recently helped clients buy and sell, mostly around Kits and the Westside."
+  />
+
+  <section class="section">
+    <div class="container">
+      {
+        all.length === 0 && (
+          <div class="empty card">
+            <h2>New listings are on the way</h2>
+            <p class="lede">
+              There’s nothing posted here right now. Many great homes sell before they’re widely advertised, so tell me
+              what you’re looking for and I’ll let you know as soon as something fits.
+            </p>
+            <div class="actions">
+              <a class="btn btn--primary" href="/contact?intent=buy">Share your wish list</a>
+              <a class="btn btn--ghost" href="/contact?intent=sell">Thinking of selling?</a>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        active.length > 0 && (
+          <div class="group">
+            <h2>Current listings</h2>
+            <div class="grid grid--3">
+              {active.map((p) => (
+                <PropertyCard property={p} />
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      {
+        past.length > 0 && (
+          <div class="group">
+            <h2>Recently sold &amp; leased</h2>
+            <div class="grid grid--3">
+              {past.map((p) => (
+                <PropertyCard property={p} />
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <CtaBand title="Looking for something specific?" text="Tell me your must-haves and I’ll let you know as soon as the right home hits the market." href="/contact?intent=buy" label="Share your wish list" />
+</Base>
+
+<style>
+  .group + .group {
+    margin-top: clamp(56px, 8vw, 96px);
+  }
+  .group h2 {
+    margin-bottom: 28px;
+  }
+  .empty {
+    max-width: 760px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

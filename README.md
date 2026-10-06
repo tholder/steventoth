@@ -33,6 +33,19 @@ npm run check    # type-check
 
 Without the email variables the form shows a friendly "not set up yet" message and logs the enquiry to the function logs.
 
+## Adding properties
+
+The **Properties** page (`/properties`) and the "Recent properties" strip on the homepage come from Markdown files in `src/content/properties/`. Until there's at least one, the page shows a "new listings on the way" message and the homepage strip is hidden.
+
+1. Copy `src/content/properties/_template.md` to a new file such as `2150-west-3rd-ave.md`. The file name becomes the URL.
+2. Fill in the details and put photos in `src/content/properties/photos/`. They're resized and converted to AVIF/WebP automatically.
+3. Optionally set `externalUrl` to the full listing on REALTOR.ca, Zealty, etc.
+4. Commit and push. Vercel redeploys automatically.
+
+Only post photos and descriptions Steven has the rights to use: his own listings, with his brokerage's and seller's consent. Use `showPrice: false` for sold prices you don't have permission to publish.
+
+> **Why not pull listings from Zealty?** Zealty's terms prohibit scraping, extracting or redistributing listing data, and it's MLS® data owned by the boards. The legitimate way to automate this is a licensed feed: CREA's **DDF®** (free for REALTOR® members, covers Steven's own or his brokerage's listings) or a board-approved IDX provider through Macdonald Realty. Either can be wired into the same `properties` collection later with an Astro content loader.
+
 ## Editing content
 
 - Contact details, brokerage and social links: `src/data/site.ts`

@@ -17,6 +17,7 @@ export const site = {
 };
 
 export const nav = [
+  { href: '/properties', label: 'Properties' },
   { href: '/buying', label: 'Buying' },
   { href: '/selling', label: 'Selling' },
   { href: '/neighbourhoods', label: 'Neighbourhoods' },

@@ -1,0 +1,234 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { Picture } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getProperties, statusLabel, formatPrice, neighbourhoodFor, type Property } from '../../lib/properties';
+import { site } from '../../data/site';
+
+export const getStaticPaths = (async () => {
+  const all = await getProperties();
+  return all.map((property) => ({ params: { slug: property.id }, props: { property } }));
+}) satisfies GetStaticPaths;
+
+const { property } = Astro.props as { property: Property };
+const d = property.data;
+const { Content } = await render(property);
+const hood = neighbourhoodFor(d.neighbourhood);
+const priceText = d.showPrice && d.price != null ? formatPrice(d.price) : undefined;
+const url = `${site.url}/properties/${property.id}`;
+
+const facts: [string, string][] = [
+  ['Status', statusLabel[d.status]],
+  ['Type', d.type],
+  ...(d.beds != null ? [['Bedrooms', String(d.beds)] as [string, string]] : []),
+  ...(d.baths != null ? [['Bathrooms', String(d.baths)] as [string, string]] : []),
+  ...(d.sqft != null ? [['Interior', `${d.sqft.toLocaleString('en-CA')} sq ft`] as [string, string]] : []),
+  ...(d.mlsNumber ? [['MLS®', d.mlsNumber] as [string, string]] : []),
+];
+
+const listing = {
+  '@context': 'https://schema.org',
+  '@type': 'RealEstateListing',
+  name: d.address,
+  url,
+  datePosted: d.date.toISOString().slice(0, 10),
+  ...(d.image ? { image: new URL(d.image.src, site.url).toString() } : {}),
+  about: {
+    '@type': 'SingleFamilyResidence',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: d.address,
+      addressLocality: 'Vancouver',
+      addressRegion: 'BC',
+      addressCountry: 'CA',
+    },
+    ...(d.beds != null ? { numberOfRooms: d.beds } : {}),
+    ...(d.sqft != null ? { floorSize: { '@type': 'QuantitativeValue', value: d.sqft, unitCode: 'FTK' } } : {}),
+  },
+  ...(priceText && d.status === 'for-sale'
+    ? { offers: { '@type': 'Offer', price: d.price, priceCurrency: 'CAD', availability: 'https://schema.org/InStock' } }
+    : {}),
+};
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'Properties', item: `${site.url}/properties` },
+    { '@type': 'ListItem', position: 3, name: d.address, item: url },
+  ],
+};
+---
+
+<Base
+  title={`${d.address}, ${d.neighbourhood}`}
+  description={`${statusLabel[d.status]}: ${d.type} at ${d.address} in ${d.neighbourhood}, Vancouver${priceText ? `, ${priceText}` : ''}. Presented by Steven Toth, REALTOR®.`}
+  image={d.image?.src}
+  jsonLd={[listing, breadcrumb]}
+>
+  <PageHero eyebrow={statusLabel[d.status]} title={d.address} lede={`${d.neighbourhood} · ${d.type}${priceText ? ` · ${priceText}` : ''}`}>
+    <nav slot="breadcrumb" aria-label="Breadcrumb" class="crumbs">
+      <a href="/">Home</a> / <a href="/properties">Properties</a> / <span aria-current="page">{d.address}</span>
+    </nav>
+  </PageHero>
+
+  <section class="section">
+    <div class="container layout">
+      <article>
+        {
+          d.image && (
+            <Picture
+              class="hero-img"
+              src={d.image}
+              alt={d.imageAlt ?? d.address}
+              widths={[640, 960, 1280]}
+              sizes="(min-width: 960px) 760px, 92vw"
+              formats={['avif']}
+              fallbackFormat="webp"
+              loading="eager"
+              fetchpriority="high"
+            />
+          )
+        }
+        <div class="prose">
+          <Content />
+        </div>
+        {
+          d.gallery.length > 0 && (
+            <div class="gallery">
+              {d.gallery.map((img, i) => (
+                <Picture
+                  src={img}
+                  alt={`${d.address}, photo ${i + 2}`}
+                  widths={[400, 800]}
+                  sizes="(min-width: 960px) 370px, 46vw"
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                />
+              ))}
+            </div>
+          )
+        }
+      </article>
+
+      <aside class="side">
+        <div class="card">
+          <dl class="facts">
+            {
+              facts.map(([k, v]) => (
+                <div>
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          {d.externalUrl && <a class="btn btn--ghost full" href={d.externalUrl} rel="noopener" target="_blank">{d.externalLabel}</a>}
+        </div>
+        <div class="card side-cta">
+          <h2 class="side-title">Interested in this home?</h2>
+          <p>Ask me a question or book a showing.</p>
+          <a class="btn btn--primary" href={`/contact?intent=buy${hood ? `&area=${hood.slug}` : ''}`}>Get in touch</a>
+          <p class="call">or call <a href={site.phoneHref}>{site.phone}</a></p>
+        </div>
+        {hood && <p class="hood-link">Explore the <a href={`/neighbourhoods/${hood.slug}`}>{hood.name} neighbourhood guide</a>.</p>}
+      </aside>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .crumbs {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+  .crumbs a {
+    color: var(--ink-soft);
+  }
+  .layout {
+    display: grid;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 1fr 340px;
+      gap: 64px;
+    }
+    .side {
+      position: sticky;
+      top: 104px;
+    }
+  }
+  .layout :global(.hero-img img),
+  .layout :global(img.hero-img) {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .gallery :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .side {
+    display: grid;
+    gap: 20px;
+  }
+  .facts {
+    margin: 0 0 20px;
+  }
+  .facts div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .facts dt {
+    color: var(--ink-soft);
+  }
+  .facts dd {
+    margin: 0;
+    font-weight: 600;
+    text-align: right;
+  }
+  .full {
+    width: 100%;
+  }
+  .side-title {
+    font-size: 1.2rem;
+  }
+  .side-cta {
+    background: var(--forest-deep);
+    border-color: var(--forest-deep);
+    color: var(--mist);
+  }
+  .side-cta p {
+    color: #c8d8cc;
+  }
+  .call {
+    margin: 12px 0 0;
+    font-size: 0.95rem;
+  }
+  .call a {
+    color: var(--mist);
+  }
+  .hood-link {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+</style>

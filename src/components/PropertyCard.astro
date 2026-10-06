@@ -1,0 +1,136 @@
+---
+import { Picture } from 'astro:assets';
+import Mountains from './Mountains.astro';
+import { statusLabel, formatPrice, type Property } from '../lib/properties';
+
+interface Props {
+  property: Property;
+}
+const { property } = Astro.props;
+const d = property.data;
+const facts = [
+  d.beds != null && `${d.beds} bed`,
+  d.baths != null && `${d.baths} bath`,
+  d.sqft != null && `${d.sqft.toLocaleString('en-CA')} sq ft`,
+].filter(Boolean);
+---
+
+<a class="prop" href={`/properties/${property.id}`}>
+  <div class="media">
+    {
+      d.image ? (
+        <Picture
+          src={d.image}
+          alt={d.imageAlt ?? d.address}
+          widths={[400, 640, 800]}
+          sizes="(min-width: 1000px) 360px, (min-width: 720px) 45vw, 92vw"
+          formats={['avif']}
+          fallbackFormat="webp"
+        />
+      ) : (
+        <div class="placeholder">
+          <Mountains class="ph-ridge" />
+        </div>
+      )
+    }
+    <span class:list={['status', d.status]}>{statusLabel[d.status]}</span>
+  </div>
+  <div class="body">
+    {d.showPrice && d.price != null && <p class="price">{formatPrice(d.price)}</p>}
+    <h3>{d.address}</h3>
+    <p class="meta">{d.neighbourhood} · {d.type}</p>
+    {facts.length > 0 && <p class="facts">{facts.join(' · ')}</p>}
+  </div>
+</a>
+
+<style>
+  .prop {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--ink);
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+  .prop:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+  }
+  .media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    background: var(--mist);
+  }
+  .media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #e6efdc, #cfe0c3);
+  }
+  .ph-ridge {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 60%;
+    color: var(--forest-deep);
+    --ridge-far: #8fb39a;
+    --ridge-mid: #3d6e50;
+    --ridge-trees: #1f4a33;
+  }
+  .status {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: var(--fern);
+    color: var(--white);
+  }
+  .status.sold,
+  .status.leased {
+    background: var(--forest-deep);
+  }
+  .status.coming-soon {
+    background: var(--white);
+    color: var(--forest-deep);
+  }
+  .body {
+    padding: 20px 22px 24px;
+  }
+  .price {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  h3 {
+    font-family: var(--font-body);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    margin: 0 0 4px;
+  }
+  .meta,
+  .facts {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+</style>

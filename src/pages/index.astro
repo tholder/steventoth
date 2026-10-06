@@ -6,6 +6,8 @@ import CtaBand from '../components/CtaBand.astro';
 import headshot from '../assets/steven-toth.webp';
 import { neighbourhoods } from '../data/neighbourhoods';
 import { site } from '../data/site';
+import PropertyCard from '../components/PropertyCard.astro';
+import { getProperties } from '../lib/properties';
 
 const services = [
   {
@@ -62,6 +64,8 @@ const faq = [
     a: `Steven Toth Personal Real Estate Corporation is with ${site.brokerage} in Vancouver.`,
   },
 ];
+
+const recent = (await getProperties()).slice(0, 3);
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -152,6 +156,27 @@ const faqSchema = {
       </div>
     </div>
   </section>
+
+  {
+    recent.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <div class="section-head split">
+            <div>
+              <span class="eyebrow">Recent properties</span>
+              <h2>Homes I’m working on</h2>
+            </div>
+            <a class="btn btn--ghost" href="/properties">All properties</a>
+          </div>
+          <div class="grid grid--3">
+            {recent.map((p) => (
+              <PropertyCard property={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <section class="section section--mist kits">
     <div class="container kits-grid">

@@ -3,8 +3,8 @@
   "redirects": [
     { "source": "/index.php", "destination": "/", "permanent": true },
     { "source": "/AboutMe.ubr", "destination": "/about", "permanent": true },
-    { "source": "/Properties.php", "destination": "/contact", "permanent": true },
-    { "source": "/MLS/:path*", "destination": "/contact", "permanent": true },
+    { "source": "/Properties.php", "destination": "/properties", "permanent": true },
+    { "source": "/MLS/:path*", "destination": "/properties", "permanent": true },
     { "source": "/MarketUpdate.ubr", "destination": "/", "permanent": true },
     { "source": "/(SeptemberStats|AugustStats).ubr", "destination": "/", "permanent": true },
     { "source": "/(MarketingPlan|ImportanceofPricing|PreparingYourHome).ubr", "destination": "/selling", "permanent": true },
