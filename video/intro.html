@@ -478,7 +478,6 @@
       track('c', sceneSpan(...C));
       track('c-sun', [[C[0], { y: 30 }], [C[1], { y: -10 }]]);
       track('c-mist', [[C[0], { x: -80, o: 0.6 }], [C[1], { x: 80, o: 0.6 }]]);
-      track('c-boat', [[C[0], { x: 260, y: 600 }], [C[1], { x: 820, y: 600 }]]);
       track('c-eyebrow', rise(C[0] + 0.5, 0.7, 20));
       track('c-title', rise(C[0] + 0.7, 0.8));
       ['c-ch1', 'c-ch2', 'c-ch3', 'c-ch4'].forEach((k, i) =>
@@ -555,7 +554,7 @@
       place(cFront);
 
       const waves = document.getElementById('c-waves');
-      const waveData = Array.from({ length: 14 }, () => ({ x: rand() * 1400, y: 560 + rand() * 80, w: 40 + rand() * 70, v: 10 + rand() * 18 }));
+      const waveData = Array.from({ length: 14 }, () => ({ x: rand() * 1400, y: 560 + rand() * 80, w: 40 + rand() * 70, v: 3 + rand() * 5 }));
       waveData.forEach(() => waves.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'path')));
 
       const rain = document.getElementById('rain');
@@ -593,6 +592,13 @@
           rctx.lineTo(x - d.l * 0.18, y + d.l);
           rctx.stroke();
         }
+
+        // Barely a breath of wind: a slow drift with a gentle bob.
+        const boat = els['c-boat'];
+        const bx = 470 + (t - C[0]) * 14;
+        const by = 600 + Math.sin(t * 1.3) * 2.5;
+        const tilt = Math.sin(t * 1.3 + 0.8) * 1.6;
+        boat.setAttribute('transform', `translate(${bx.toFixed(2)} ${by.toFixed(2)}) rotate(${tilt.toFixed(2)})`);
 
         waveData.forEach((w, i) => {
           const x = ((w.x + t * w.v) % 1400) - 80;

@@ -56,7 +56,7 @@ npx playwright install chromium
 node video/render.mjs
 ```
 
-It's silent (so it can autoplay muted), plays only while on screen, has a pause button, and won't autoplay for visitors who prefer reduced motion. If Steven records a real talking-head clip later, drop it in `public/video/` with the same file names.
+The soundtrack is an original ambient piece synthesised in code by `video/music.mjs` (pads, kalimba arpeggio, bass drone, rain, wind and birds, with chords following the scene cuts), so there are no licensing issues. `node video/music.mjs out.wav` renders it on its own. On the site the video autoplays muted (browsers require that) with a "Sound on" button, plays only while on screen, has a pause button, and won't autoplay for visitors who prefer reduced motion. If Steven records a real talking-head clip later, drop it in `public/video/` with the same file names.
 
 ## Editing content
 

@@ -72,7 +72,7 @@ const videoSchema = {
   '@type': 'VideoObject',
   name: 'Meet Steven Toth, Kitsilano REALTOR®',
   description:
-    'A 26-second introduction to Steven Toth: born and raised on Vancouver’s Westside, living in Kitsilano, helping people buy and sell homes across Vancouver.',
+    'A 26-second introduction to Steven Toth, with an original ambient soundtrack: born and raised on Vancouver’s Westside, living in Kitsilano, helping people buy and sell homes across Vancouver.',
   thumbnailUrl: `${site.url}/video/steven-toth-intro-poster.jpg`,
   contentUrl: `${site.url}/video/steven-toth-intro.mp4`,
   uploadDate: '2026-10-06',
@@ -169,6 +169,11 @@ const faqSchema = {
           <source src="/video/steven-toth-intro.webm" type="video/webm" />
           <source src="/video/steven-toth-intro.mp4" type="video/mp4" />
         </video>
+        <button class="video-sound" type="button" aria-pressed="false">
+          <svg class="i-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"></path><path d="M16 9.5l5 5m0-5l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+          <svg class="i-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"></path><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+          <span class="sound-label">Sound on</span>
+        </button>
         <button class="video-toggle" type="button" aria-pressed="false">
           <span class="sr-only">Play video</span>
           <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"></path></svg>
@@ -365,10 +370,32 @@ const faqSchema = {
         video.pause();
       }
     });
+    const sound = document.querySelector<HTMLButtonElement>('.video-sound');
+    const soundLabel = sound?.querySelector('.sound-label');
+    const syncSound = () => {
+      sound?.setAttribute('aria-pressed', String(!video.muted));
+      sound?.classList.toggle('is-on', !video.muted);
+      if (soundLabel) soundLabel.textContent = video.muted ? 'Sound on' : 'Mute';
+    };
+    sound?.addEventListener('click', () => {
+      video.muted = !video.muted;
+      if (!video.muted && video.paused) {
+        userPaused = false;
+        video.play().catch(() => {});
+      }
+      syncSound();
+    });
+    video.addEventListener('volumechange', syncSound);
+
     // Only play while on screen (and only start downloading when it's close).
     new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !userPaused) video.play().catch(() => {});
+        if (entry.isIntersecting && !userPaused)
+          video.play().catch(() => {
+            // Browsers may refuse unmuted autoplay; fall back to muted.
+            video.muted = true;
+            video.play().catch(() => {});
+          });
         else if (!entry.isIntersecting) video.pause();
       },
       { threshold: 0.4 },
@@ -418,6 +445,40 @@ const faqSchema = {
     cursor: pointer;
     backdrop-filter: blur(6px);
     transition: background 0.2s;
+  }
+  .video-sound {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    height: 44px;
+    padding: 0 16px 0 12px;
+    border-radius: 999px;
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgb(14 34 24 / 0.72);
+    color: var(--white);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background 0.2s;
+  }
+  .video-sound:hover {
+    background: var(--forest-deep);
+  }
+  .video-sound svg {
+    width: 20px;
+    height: 20px;
+  }
+  .video-sound .i-sound,
+  .video-sound.is-on .i-muted {
+    display: none;
+  }
+  .video-sound.is-on .i-sound {
+    display: block;
   }
   .video-toggle:hover {
     background: var(--forest-deep);
