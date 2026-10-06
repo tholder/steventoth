@@ -1,0 +1,565 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { site } from '../../data/site';
+import {
+  intents,
+  timelines,
+  propertyTypes,
+  bedrooms,
+  bathrooms,
+  prices,
+  areas,
+  mustHaves,
+  financing,
+  contactMethods,
+} from '../../data/form';
+---
+
+<Base
+  title="Contact Steven Toth"
+  description="Get in touch with Kitsilano REALTOR® Steven Toth. Share your property preferences, budget and timeline, or request a free home evaluation. Call 778-238-7799."
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Let’s find the right move for you"
+    lede="Tell me a little about what you’re looking for. The more you share, the better I can help. I’ll reply personally, usually the same day."
+  />
+
+  <section class="section contact">
+    <div class="container contact-grid">
+      <aside class="info">
+        <div class="card info-card">
+          <h2>Prefer to talk?</h2>
+          <p><a class="big" href={site.phoneHref}>{site.phone}</a></p>
+          <p>Call or text any time. If I’m with a client, I’ll call you back as soon as I can.</p>
+          <hr />
+          <p class="small">
+            <strong>Steven Toth</strong><br />
+            {site.legalName}<br />
+            {site.brokerage}<br />
+            Kitsilano, Vancouver, BC
+          </p>
+          <ul class="social">
+            <li><a href={site.social.facebook} rel="noopener" target="_blank">Facebook</a></li>
+            <li><a href={site.social.linkedin} rel="noopener" target="_blank">LinkedIn</a></li>
+            <li><a href={site.social.x} rel="noopener" target="_blank">X</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <form id="contact-form" class="form" method="post" action="/api/contact" novalidate>
+        <div class="hp" aria-hidden="true">
+          <label>Leave this field empty <input type="text" name="company_website" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <input type="hidden" name="started_at" value="" />
+
+        <fieldset>
+          <legend><span class="step">1</span> About you</legend>
+          <div class="row two">
+            <div class="field">
+              <label for="name">Full name <span class="req">*</span></label>
+              <input id="name" name="name" type="text" autocomplete="name" required maxlength="120" />
+            </div>
+            <div class="field">
+              <label for="email">Email <span class="req">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" required maxlength="200" />
+            </div>
+          </div>
+          <div class="row two">
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" />
+            </div>
+            <div class="field">
+              <span class="label" id="contact-method-label">Best way to reach you</span>
+              <div class="chips" role="radiogroup" aria-labelledby="contact-method-label">
+                {
+                  contactMethods.map((m, i) => (
+                    <label class="chip">
+                      <input type="radio" name="contact_method" value={m} checked={i === 0} />
+                      <span>{m}</span>
+                    </label>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><span class="step">2</span> Your plans</legend>
+          <div class="field">
+            <span class="label" id="intent-label">I’m looking to… <span class="req">*</span></span>
+            <div class="chips" role="radiogroup" aria-labelledby="intent-label">
+              {
+                intents.map((o) => (
+                  <label class="chip">
+                    <input type="radio" name="intent" value={o.value} required />
+                    <span>{o.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </div>
+          <div class="field narrow">
+            <label for="timeline">Timeline</label>
+            <select id="timeline" name="timeline">
+              <option value="">Select…</option>
+              {timelines.map((t) => <option>{t}</option>)}
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset data-show-for="buy buy-sell invest explore">
+          <legend><span class="step">3</span> Property preferences</legend>
+
+          <div class="field">
+            <span class="label">Property type</span>
+            <div class="chips">
+              {
+                propertyTypes.map((t) => (
+                  <label class="chip">
+                    <input type="checkbox" name="property_types" value={t} />
+                    <span>{t}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="row four">
+            <div class="field">
+              <label for="price_min">Price from</label>
+              <select id="price_min" name="price_min">
+                <option value="">No min</option>
+                {prices.map((p) => <option>{p}</option>)}
+              </select>
+            </div>
+            <div class="field">
+              <label for="price_max">Price to</label>
+              <select id="price_max" name="price_max">
+                <option value="">No max</option>
+                {prices.map((p) => <option>{p}</option>)}
+              </select>
+            </div>
+            <div class="field">
+              <label for="bedrooms">Bedrooms</label>
+              <select id="bedrooms" name="bedrooms">
+                <option value="">Any</option>
+                {bedrooms.map((b) => <option>{b}</option>)}
+              </select>
+            </div>
+            <div class="field">
+              <label for="bathrooms">Bathrooms</label>
+              <select id="bathrooms" name="bathrooms">
+                <option value="">Any</option>
+                {bathrooms.map((b) => <option>{b}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label">Neighbourhoods you’re considering</span>
+            <div class="chips">
+              {
+                areas.map((a) => (
+                  <label class="chip">
+                    <input type="checkbox" name="areas" value={a.value} data-label={a.label} />
+                    <span>{a.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label">Must-haves</span>
+            <div class="chips">
+              {
+                mustHaves.map((m) => (
+                  <label class="chip">
+                    <input type="checkbox" name="must_haves" value={m} />
+                    <span>{m}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label" id="financing-label">Financing</span>
+            <div class="chips" role="radiogroup" aria-labelledby="financing-label">
+              {
+                financing.map((f) => (
+                  <label class="chip">
+                    <input type="radio" name="financing" value={f} />
+                    <span>{f}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset data-show-for="sell buy-sell">
+          <legend><span class="step">4</span> The home you’re selling</legend>
+          <div class="row two">
+            <div class="field">
+              <label for="sell_address">Address or neighbourhood</label>
+              <input id="sell_address" name="sell_address" type="text" autocomplete="street-address" maxlength="200" />
+            </div>
+            <div class="field">
+              <label for="sell_type">Property type</label>
+              <select id="sell_type" name="sell_type">
+                <option value="">Select…</option>
+                {propertyTypes.map((t) => <option>{t}</option>)}
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><span class="step" data-last-step>5</span> Anything else?</legend>
+          <div class="field">
+            <label for="message">Tell me more about your plans, questions or the home of your dreams</label>
+            <textarea id="message" name="message" rows="5" maxlength="5000"></textarea>
+          </div>
+          <label class="consent">
+            <input type="checkbox" name="consent" value="yes" required />
+            <span>I agree to be contacted by Steven Toth about this enquiry. See the <a href="/privacy">privacy policy</a>. <span class="req">*</span></span>
+          </label>
+        </fieldset>
+
+        <div class="submit-row">
+          <button class="btn btn--primary" type="submit">Send to Steven</button>
+          <p class="status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#contact-form');
+  if (form) {
+    const started = form.querySelector<HTMLInputElement>('[name="started_at"]');
+    if (started) started.value = String(Date.now());
+
+    // Pre-fill from links like /contact?intent=sell or /contact?area=kitsilano
+    const params = new URLSearchParams(location.search);
+    const intent = params.get('intent');
+    if (intent) {
+      const radio = form.querySelector<HTMLInputElement>(`[name="intent"][value="${CSS.escape(intent)}"]`);
+      if (radio) radio.checked = true;
+    }
+    const area = params.get('area');
+    if (area) {
+      const box = form.querySelector<HTMLInputElement>(`[name="areas"][value="${CSS.escape(area)}"]`);
+      if (box) box.checked = true;
+      if (!intent) {
+        const buy = form.querySelector<HTMLInputElement>('[name="intent"][value="buy"]');
+        if (buy) buy.checked = true;
+      }
+    }
+
+    // Show only the sections relevant to what the visitor wants to do.
+    const sections = form.querySelectorAll<HTMLFieldSetElement>('fieldset[data-show-for]');
+    const lastStep = form.querySelector<HTMLElement>('[data-last-step]');
+    const syncSections = () => {
+      const value = form.querySelector<HTMLInputElement>('[name="intent"]:checked')?.value;
+      let step = 3;
+      sections.forEach((fs) => {
+        const show = !value || fs.dataset.showFor!.split(' ').includes(value);
+        fs.hidden = !show;
+        fs.disabled = !show;
+        if (show) fs.querySelector('.step')!.textContent = String(step++);
+      });
+      if (lastStep) lastStep.textContent = String(step);
+    };
+    form.addEventListener('change', (e) => {
+      if ((e.target as HTMLInputElement).name === 'intent') syncSections();
+    });
+    syncSections();
+
+    const status = form.querySelector<HTMLElement>('.status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      status.className = 'status';
+
+      if (!form.checkValidity()) {
+        const firstInvalid = form.querySelector<HTMLElement>(':invalid');
+        form.reportValidity();
+        firstInvalid?.focus();
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) {
+          location.href = '/contact/thanks';
+          return;
+        }
+        throw new Error(data.error || 'Something went wrong.');
+      } catch (err) {
+        status.textContent = `${(err as Error).message} Please try again, or call 778-238-7799.`;
+        status.className = 'status error';
+        button.disabled = false;
+        button.textContent = 'Send to Steven';
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact-grid {
+    display: grid;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (min-width: 1000px) {
+    .contact-grid {
+      grid-template-columns: 320px 1fr;
+      gap: 56px;
+    }
+    .info {
+      position: sticky;
+      top: 104px;
+    }
+  }
+  .info-card h2 {
+    font-size: 1.4rem;
+  }
+  .big {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .info-card hr {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: 24px 0;
+  }
+  .small {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  .social {
+    display: flex;
+    gap: 16px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .form {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(20px, 4vw, 48px);
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 40px;
+    min-width: 0;
+  }
+  fieldset[hidden] {
+    display: none;
+  }
+  legend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 560;
+    margin-bottom: 20px;
+    padding: 0;
+  }
+  .step {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--sea-deep);
+    color: var(--sand);
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    flex: none;
+  }
+  .row {
+    display: grid;
+    gap: 16px 20px;
+  }
+  @media (min-width: 640px) {
+    .row.two {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .row.four {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  @media (min-width: 480px) and (max-width: 639px) {
+    .row.four {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .field {
+    margin-bottom: 20px;
+    min-width: 0;
+  }
+  .field.narrow {
+    max-width: 320px;
+  }
+  label,
+  .label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+  }
+  .req {
+    color: var(--sunset-deep);
+  }
+  input[type='text'],
+  input[type='email'],
+  input[type='tel'],
+  select,
+  textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+  }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23102a3a' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+    padding-right: 36px;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--sea);
+    box-shadow: 0 0 0 4px rgb(31 95 117 / 0.15);
+    background: var(--white);
+  }
+  textarea {
+    resize: vertical;
+    min-height: 130px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    position: relative;
+    margin: 0;
+    font-weight: 500;
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .chip span {
+    display: inline-block;
+    padding: 9px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--paper);
+    font-size: 0.93rem;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      border-color 0.15s,
+      color 0.15s;
+    user-select: none;
+  }
+  .chip:hover span {
+    border-color: var(--sea);
+  }
+  .chip input:checked + span {
+    background: var(--sea-deep);
+    border-color: var(--sea-deep);
+    color: var(--sand);
+  }
+  .chip input:focus-visible + span {
+    outline: 3px solid var(--sunset);
+    outline-offset: 2px;
+  }
+
+  .consent {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  .consent input {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: var(--sea-deep);
+    flex: none;
+  }
+
+  .submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+  .submit-row .btn {
+    font-size: 1.05rem;
+    padding: 1em 2em;
+  }
+  .submit-row .btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+  .status {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .status.error {
+    color: #a3341c;
+  }
+
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>

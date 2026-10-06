@@ -1,0 +1,122 @@
+---
+import { nav, site } from '../data/site';
+import { neighbourhoods } from '../data/neighbourhoods';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container cols">
+    <div class="about">
+      <p class="f-brand">Steven Toth</p>
+      <p>
+        {site.legalName}<br />
+        {site.brokerage}<br />
+        Based in Kitsilano, serving Vancouver and the Lower Mainland.
+      </p>
+      <p><a class="phone" href={site.phoneHref}>{site.phone}</a></p>
+      <ul class="social" aria-label="Social media">
+        <li><a href={site.social.facebook} rel="noopener" target="_blank">Facebook</a></li>
+        <li><a href={site.social.linkedin} rel="noopener" target="_blank">LinkedIn</a></li>
+        <li><a href={site.social.x} rel="noopener" target="_blank">X / Twitter</a></li>
+      </ul>
+    </div>
+    <nav aria-label="Footer">
+      <p class="f-head">Explore</p>
+      <ul>
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Neighbourhoods">
+      <p class="f-head">Neighbourhoods</p>
+      <ul>
+        {
+          neighbourhoods.map((n) => (
+            <li>
+              <a href={`/neighbourhoods/${n.slug}`}>{n.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+  <div class="container legal">
+    <p>
+      © {year} {site.legalName}. REALTOR® is a trademark controlled by The Canadian Real Estate Association (CREA)
+      and identifies real estate professionals who are members of CREA.
+    </p>
+    <p>
+      This website is not intended to solicit buyers or sellers currently under contract with another brokerage.
+      Information is believed to be reliable but is not guaranteed. <a href="/privacy">Privacy policy</a>.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: #0b2231;
+    color: #b9c9d0;
+    padding-block: 64px 32px;
+    font-size: 0.95rem;
+  }
+  .site-footer a {
+    color: #e6eef1;
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    color: #f0a283;
+  }
+  .cols {
+    display: grid;
+    gap: 40px;
+  }
+  @media (min-width: 820px) {
+    .cols {
+      grid-template-columns: 1.4fr 1fr 1.4fr;
+    }
+  }
+  .f-brand {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--sand);
+    margin-bottom: 0.5em;
+  }
+  .f-head {
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #f0a283;
+    font-weight: 600;
+  }
+  .phone {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  nav li {
+    margin-bottom: 8px;
+  }
+  nav[aria-label='Neighbourhoods'] ul {
+    columns: 2;
+    column-gap: 24px;
+  }
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .legal {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+    font-size: 0.82rem;
+    color: #8aa0aa;
+  }
+  .legal a {
+    text-decoration: underline;
+  }
+</style>

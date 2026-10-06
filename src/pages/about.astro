@@ -1,0 +1,132 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import headshot from '../assets/steven-toth.webp';
+import { site } from '../data/site';
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Steven Toth',
+  jobTitle: 'REALTOR®',
+  worksFor: { '@type': 'RealEstateAgent', name: site.brokerage },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'University of British Columbia' },
+  homeLocation: { '@type': 'Place', name: 'Kitsilano, Vancouver, BC' },
+  telephone: '+1-778-238-7799',
+  url: `${site.url}/about`,
+  image: `${site.url}/og.jpg`,
+  sameAs: Object.values(site.social),
+};
+---
+
+<Base
+  title="About Steven Toth"
+  description="Meet Steven Toth: born and raised on Vancouver's Westside, UBC grad, Kitsilano resident and REALTOR® with Macdonald Realty, focused on long-term client relationships."
+  jsonLd={[person]}
+>
+  <PageHero
+    eyebrow="About Steven"
+    title="A Westside local who treats every client like a neighbour"
+    lede="Born and raised in Vancouver. Living in Kitsilano. Here to build a relationship that lasts well beyond one transaction."
+  />
+
+  <section class="section about">
+    <div class="container about-grid">
+      <div class="photo">
+        <Picture
+          src={headshot}
+          alt="Portrait of Steven Toth"
+          widths={[360, 540, 720]}
+          sizes="(min-width: 900px) 380px, 90vw"
+          formats={['avif']}
+            fallbackFormat="webp"
+        />
+      </div>
+      <div class="prose">
+        <p class="lede">
+          Steven was born and raised on the Westside of Vancouver. He studied at the University of British Columbia,
+          then spent several years travelling the world and living overseas before coming home to the city he loves.
+        </p>
+        <p>
+          Today Steven lives in Kitsilano with his wife and two daughters. In his free time you’ll find him travelling,
+          playing sports, camping, at a concert or wandering a gallery. He’s always up for trying something new.
+        </p>
+        <p>
+          That mix of deep local roots and life abroad shapes how he works. He knows Vancouver neighbourhoods from the
+          inside, and he understands what it feels like to arrive somewhere new. That makes him a good guide for
+          long-time locals and newcomers alike.
+        </p>
+
+        <h2>Trained, licensed and always learning</h2>
+        <p>
+          Steven is fully trained and licensed to trade in real estate in British Columbia, and he works under
+          {site.legalName} with {site.brokerage}. He has completed <strong>Condo 101</strong> and
+          <strong>Condo 202</strong>, along with ongoing professional courses that keep him current on strata
+          rules, market changes and industry best practices.
+        </p>
+
+        <h2>The way Steven works</h2>
+        <ul class="check-list">
+          <li><strong>Relationship first.</strong> The goal is a partnership you can trust for a lifetime of real estate needs.</li>
+          <li><strong>Straight answers.</strong> Honest pricing advice and clear explanations, even when it isn’t what you hoped to hear.</li>
+          <li><strong>Local knowledge.</strong> Block-by-block insight across Kits and the Westside.</li>
+          <li><strong>Responsive.</strong> Calls and messages returned promptly, because timing matters in this market.</li>
+        </ul>
+
+        <blockquote>
+          “I’m looking forward to speaking with you and, more importantly, building a relationship that will last for
+          many years to come. And if you see me around the neighbourhood, please say hello!”
+          <cite>— Steven</cite>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Let’s grab a coffee on West 4th" text="Whether you’re ready to move or just curious about the market, I’m happy to chat. No pressure." />
+</Base>
+
+<style>
+  .about-grid {
+    display: grid;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .about-grid {
+      grid-template-columns: 380px 1fr;
+      gap: 72px;
+    }
+    .photo {
+      position: sticky;
+      top: 104px;
+    }
+  }
+  .photo {
+    max-width: 420px;
+  }
+  .photo :global(img) {
+    border-radius: var(--radius-lg);
+    width: 100%;
+    box-shadow: 0 24px 50px -20px rgb(16 42 58 / 0.35);
+  }
+  blockquote {
+    margin: 40px 0 0;
+    padding: 28px 32px;
+    background: var(--sand);
+    border-left: 4px solid var(--sunset);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.5;
+  }
+  cite {
+    display: block;
+    margin-top: 12px;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+</style>

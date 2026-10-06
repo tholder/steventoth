@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+---
+
+<Base title="Page not found" description="Sorry, that page couldn't be found." noindex>
+  <PageHero
+    eyebrow="404"
+    title="This page has moved, or never existed."
+    lede="The site has been refreshed, so some old links no longer work. Try one of these instead."
+  >
+    <div class="actions">
+      <a class="btn btn--primary" href="/">Home</a>
+      <a class="btn btn--ghost" href="/neighbourhoods">Neighbourhoods</a>
+      <a class="btn btn--ghost" href="/contact">Contact Steven</a>
+    </div>
+  </PageHero>
+</Base>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+</style>

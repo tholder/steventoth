@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+---
+
+<Base title="Privacy Policy" description="How Steven Toth collects, uses and protects personal information submitted through steventoth.ca.">
+  <PageHero eyebrow="Privacy" title="Privacy policy" />
+  <section class="section">
+    <div class="container prose">
+      <p>
+        {site.legalName} (“we”, “us”) respects your privacy and handles personal information in accordance with
+        British Columbia’s <em>Personal Information Protection Act</em> (PIPA) and Canada’s anti-spam legislation (CASL).
+      </p>
+      <h2>What we collect</h2>
+      <p>
+        When you use the contact form, we collect the information you choose to provide, such as your name, email,
+        phone number, property preferences, budget and timeline. We also use privacy-friendly analytics to understand
+        overall site usage. It does not use cookies or identify individual visitors.
+      </p>
+      <h2>How we use it</h2>
+      <p>
+        We use your information only to respond to your enquiry and to provide the real estate services you request.
+        We don’t sell or rent your information. We may share it with {site.brokerage} and with service providers who
+        help us operate this website (for example, email delivery), only as needed to serve you.
+      </p>
+      <h2>Your choices</h2>
+      <p>
+        You can ask to access, correct or delete your personal information, or withdraw your consent to be contacted,
+        at any time by calling <a href={site.phoneHref}>{site.phone}</a> or replying to any email from us.
+      </p>
+      <h2>Retention &amp; security</h2>
+      <p>
+        We keep personal information only as long as needed for the purposes above or as required by law and
+        real estate regulations, and we take reasonable steps to protect it.
+      </p>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { site } from '../../data/site';
+---
+
+<Base title="Thank you" description="Thanks for getting in touch with Steven Toth." noindex>
+  <PageHero
+    eyebrow="Message sent"
+    title="Thanks, I’ll be in touch soon."
+    lede="Your message is on its way to me. I’ll reply personally, usually within one business day. If it’s urgent, call or text me."
+  >
+    <div class="actions">
+      <a class="btn btn--primary" href={site.phoneHref}>Call {site.phone}</a>
+      <a class="btn btn--ghost" href="/neighbourhoods">Browse neighbourhood guides</a>
+    </div>
+  </PageHero>
+</Base>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+</style>

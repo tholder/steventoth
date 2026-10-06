@@ -1,0 +1,526 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Mountains from '../components/Mountains.astro';
+import CtaBand from '../components/CtaBand.astro';
+import headshot from '../assets/steven-toth.webp';
+import { neighbourhoods } from '../data/neighbourhoods';
+import { site } from '../data/site';
+
+const services = [
+  {
+    title: 'Buying',
+    text: 'From first condo to forever home. I’ll help you understand the market, find the right fit and negotiate with confidence.',
+    href: '/buying',
+  },
+  {
+    title: 'Selling',
+    text: 'Accurate pricing, careful preparation and marketing that presents your home at its best, so it sells for the right price.',
+    href: '/selling',
+  },
+  {
+    title: 'New to Vancouver',
+    text: 'Moving from elsewhere? I’ve lived overseas myself. I’ll introduce you to the neighbourhoods and help you settle in.',
+    href: '/neighbourhoods',
+  },
+  {
+    title: 'Investing',
+    text: 'Condo and multi-unit opportunities, rental considerations and strata due diligence, from someone trained in condo specifics.',
+    href: '/contact?intent=invest',
+  },
+];
+
+const steps = [
+  { title: 'A real conversation', text: 'We start with your goals, timing and budget, not a sales pitch.' },
+  { title: 'A clear plan', text: 'Pricing, neighbourhoods, financing and timelines, laid out so there are no surprises.' },
+  { title: 'Search or prepare', text: 'Curated listings for buyers, or staging, photography and marketing for sellers.' },
+  { title: 'Negotiate & close', text: 'Clear advice through offers, subjects and completion, and I’m still here after the keys change hands.' },
+];
+
+const kitsLife = [
+  'Morning swims at Kits Pool and sunset volleyball on Kits Beach',
+  'Coffee, bakeries and boutiques along West 4th Avenue',
+  'Car-free rides on the Arbutus Greenway and seaside bike routes',
+  'Ten minutes to downtown, Granville Island and UBC',
+];
+
+const faq = [
+  {
+    q: 'Which areas of Vancouver does Steven Toth work in?',
+    a: 'Steven is based in Kitsilano and focuses on Vancouver’s Westside, including Kitsilano, Point Grey, Dunbar, Kerrisdale, Arbutus Ridge, Shaughnessy and Fairview. He also helps clients in Mount Pleasant, Downtown and across the Lower Mainland.',
+  },
+  {
+    q: 'Do you work with first-time buyers?',
+    a: 'Absolutely. First-time buyers are some of my favourite clients. I’ll walk you through pre-approval, deposits, subjects, strata documents and closing costs so you know exactly what to expect.',
+  },
+  {
+    q: 'How do I find out what my home is worth?',
+    a: 'Get in touch for a no-obligation market evaluation. I’ll look at recent comparable sales, current competition and your home’s features to give you a realistic price range.',
+  },
+  {
+    q: 'Which brokerage are you with?',
+    a: `Steven Toth Personal Real Estate Corporation is with ${site.brokerage} in Vancouver.`,
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Base
+  title="Steven Toth | Kitsilano & Vancouver Westside REALTOR®"
+  description="Steven Toth is a Kitsilano-based REALTOR® with Macdonald Realty, born and raised on Vancouver's Westside. Expert help buying and selling homes and condos in Kits, Point Grey, Dunbar, Kerrisdale and across Vancouver."
+  jsonLd={[faqSchema]}
+>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Kitsilano · Vancouver Westside</span>
+        <h1>Vancouver real estate, from someone who grew up here.</h1>
+        <p class="lede">
+          I’m Steven Toth. I was born and raised on Vancouver’s Westside, and now I live in Kits with my wife and two
+          daughters. Whether you’re buying your first condo, selling the family home or moving to the city, I’ll help
+          you make the right move.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn--primary" href="/contact">Tell me what you’re looking for</a>
+          <a class="btn btn--ghost" href={site.phoneHref}>Call {site.phone}</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <div class="arch">
+          <Picture
+            src={headshot}
+            alt="Steven Toth, Vancouver REALTOR®, smiling in a black polo shirt"
+            widths={[360, 540, 720]}
+            sizes="(min-width: 900px) 420px, 80vw"
+            formats={['avif']}
+            fallbackFormat="webp"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+        <div class="badge">
+          <span class="badge-label">Personal Real Estate Corporation</span>
+          <span class="badge-value">{site.brokerage}</span>
+        </div>
+      </div>
+    </div>
+    <Mountains class="hero-ridge" />
+  </section>
+
+  <section class="facts" aria-label="Quick facts">
+    <div class="container">
+      <dl class="facts-grid">
+        <div><dt>Born &amp; raised</dt><dd>Vancouver Westside</dd></div>
+        <div><dt>Lives in</dt><dd>Kitsilano</dd></div>
+        <div><dt>Educated at</dt><dd>UBC</dd></div>
+        <div><dt>Condo-trained</dt><dd>Condo 101 &amp; 202</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">How I can help</span>
+        <h2>Real estate advice that puts your goals first</h2>
+        <p class="lede">
+          Every move is different. My job is to give you honest advice, local knowledge and steady guidance from the
+          first conversation to the day you get the keys, and after that too.
+        </p>
+      </div>
+      <div class="grid grid--4">
+        {
+          services.map((s) => (
+            <a class="card service" href={s.href}>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+              <span class="more" aria-hidden="true">
+                Learn more →
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand kits">
+    <div class="container kits-grid">
+      <div>
+        <span class="eyebrow">Why Kits</span>
+        <h2>Living the Kitsilano life, every day</h2>
+        <p class="lede">
+          Kitsilano isn’t just where I work, it’s where my family lives. I know which blocks catch the evening sun,
+          which buildings are well run, and where the best croissant on West 4th is.
+        </p>
+        <ul class="check-list">
+          {kitsLife.map((item) => <li>{item}</li>)}
+        </ul>
+        <a class="btn btn--ghost" href="/neighbourhoods/kitsilano">Explore Kitsilano</a>
+      </div>
+      <figure class="kits-art" aria-hidden="true">
+        <svg viewBox="0 0 480 400" role="presentation">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f7c8a5"></stop>
+              <stop offset="0.55" stop-color="#f3dcc4"></stop>
+              <stop offset="1" stop-color="#e9efe9"></stop>
+            </linearGradient>
+            <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2f6f86"></stop>
+              <stop offset="1" stop-color="#123044"></stop>
+            </linearGradient>
+          </defs>
+          <rect width="480" height="400" rx="28" fill="url(#sky)"></rect>
+          <circle cx="330" cy="150" r="46" fill="#ef9a6f" opacity="0.85"></circle>
+          <path d="M0 210 L70 150 L120 180 L190 110 L260 175 L320 135 L390 185 L440 150 L480 170 V250 H0Z" fill="#6f8f9c"></path>
+          <path d="M0 230 L90 185 L160 215 L240 170 L320 220 L400 190 L480 215 V260 H0Z" fill="#45707f"></path>
+          <rect y="245" width="480" height="90" fill="url(#water)"></rect>
+          <path d="M40 270 h60 M150 290 h80 M300 268 h70 M360 300 h60" stroke="#9cc3cf" stroke-width="3" stroke-linecap="round" opacity="0.6"></path>
+          <path d="M0 330 C120 312 260 340 480 318 V400 H0Z" fill="#ead8b8"></path>
+          <g transform="translate(150 230)">
+            <path d="M0 0 L0 44 L-30 44Z" fill="#fbf8f3"></path>
+            <path d="M4 6 L4 44 L28 44Z" fill="#d9714e"></path>
+            <path d="M-36 48 H34 L26 58 H-28Z" fill="#0b2231"></path>
+          </g>
+          <g transform="translate(360 340)" fill="#d9714e">
+            <rect x="-2" y="0" width="3" height="34" fill="#5b4a3a"></rect>
+            <path d="M-34 6 Q-1 -22 32 6Z"></path>
+          </g>
+          <rect x="0" y="0" width="480" height="400" rx="28" fill="none" stroke="#e2d8c7"></rect>
+        </svg>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <span class="eyebrow">Neighbourhoods</span>
+          <h2>Know the neighbourhood before you move</h2>
+        </div>
+        <a class="btn btn--ghost" href="/neighbourhoods">All neighbourhoods</a>
+      </div>
+      <div class="grid grid--3">
+        {
+          neighbourhoods.slice(0, 6).map((n) => (
+            <a class="card hood" href={`/neighbourhoods/${n.slug}`}>
+              <h3>{n.name}</h3>
+              <p>{n.summary}</p>
+              <span class="more" aria-hidden="true">
+                Explore →
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">The process</span>
+        <h2>Simple, transparent, and done right</h2>
+      </div>
+      <ol class="steps">
+        {
+          steps.map((s, i) => (
+            <li>
+              <span class="step-num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container faq-grid">
+      <div>
+        <span class="eyebrow">Questions</span>
+        <h2>Frequently asked</h2>
+        <p class="lede">Have a question that isn’t here? <a href="/contact">Just ask</a>.</p>
+      </div>
+      <div class="faq">
+        {
+          faq.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    background: linear-gradient(180deg, var(--sand) 0%, #f1e4cf 100%);
+    padding-top: clamp(40px, 6vw, 80px);
+    padding-bottom: clamp(110px, 14vw, 190px);
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1.25fr 1fr;
+    }
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+  }
+  .hero-photo {
+    position: relative;
+    justify-self: center;
+    width: min(420px, 82vw);
+  }
+  .arch {
+    border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+    overflow: hidden;
+    background: var(--sea-light);
+    box-shadow: 0 30px 60px -20px rgb(16 42 58 / 0.35);
+    aspect-ratio: 4 / 5;
+  }
+  .arch :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+  .badge {
+    position: absolute;
+    left: -8px;
+    bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    box-shadow: var(--shadow);
+    max-width: 80%;
+  }
+  .badge-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+  .badge-value {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+  .hero-ridge {
+    --ridge-far: #7fa3b0;
+    --ridge-far-opacity: 0.55;
+    --ridge-mid: #3f6f80;
+    --ridge-mid-opacity: 0.5;
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: clamp(70px, 11vw, 150px);
+    color: var(--paper);
+  }
+
+  .facts {
+    margin-top: -24px;
+    position: relative;
+  }
+  .facts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin: 0;
+  }
+  @media (min-width: 820px) {
+    .facts-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .facts-grid > div {
+    background: var(--white);
+    padding: 20px 24px;
+  }
+  .facts-grid dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+  }
+  .facts-grid dd {
+    margin: 4px 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 560;
+  }
+
+  .section-head {
+    margin-bottom: clamp(32px, 5vw, 56px);
+  }
+  .section-head.split {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .service,
+  .hood {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--ink);
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s,
+      border-color 0.2s;
+  }
+  .service:hover,
+  .hood:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: var(--sand-deep);
+    color: var(--ink);
+  }
+  .service p,
+  .hood p {
+    color: var(--ink-soft);
+    flex: 1;
+  }
+  .more {
+    font-weight: 600;
+    color: var(--sea);
+    font-size: 0.95rem;
+  }
+
+  .kits-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .kits-grid {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+  .kits .check-list {
+    margin-block: 24px 32px;
+  }
+  .kits-art {
+    margin: 0;
+  }
+  .kits-art svg {
+    width: 100%;
+    filter: drop-shadow(0 24px 40px rgb(16 42 58 / 0.18));
+  }
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 24px;
+  }
+  @media (min-width: 720px) {
+    .steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .steps {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .steps li {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
+  }
+  .step-num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--sunset);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .steps p {
+    color: var(--ink-soft);
+  }
+
+  .faq-grid {
+    display: grid;
+    gap: 40px;
+  }
+  @media (min-width: 900px) {
+    .faq-grid {
+      grid-template-columns: 1fr 1.6fr;
+    }
+  }
+  .faq details {
+    border-bottom: 1px solid var(--line);
+    padding: 20px 0;
+  }
+  .faq details:first-child {
+    border-top: 1px solid var(--line);
+  }
+  .faq summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 560;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq summary::after {
+    content: '+';
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--sunset);
+    transition: transform 0.2s;
+  }
+  .faq details[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .faq details p {
+    margin: 12px 0 0;
+    color: var(--ink-soft);
+  }
+</style>

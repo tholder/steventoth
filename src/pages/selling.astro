@@ -1,0 +1,142 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+const pillars = [
+  {
+    title: 'Pricing it right',
+    text: 'The right list price is the most important decision you’ll make. I analyse recent comparable sales, active competition and your home’s strengths to recommend a price that attracts serious buyers from day one.',
+  },
+  {
+    title: 'Preparing your home',
+    text: 'Small, smart improvements such as decluttering, repairs, paint and staging can make a big difference. I’ll give you a practical, prioritised list and connect you with trusted trades.',
+  },
+  {
+    title: 'Marketing that gets noticed',
+    text: 'Professional photography, floor plans, a compelling MLS® listing, targeted online and social promotion, and well-run showings and open houses.',
+  },
+  {
+    title: 'Negotiating & closing',
+    text: 'I’ll review every offer with you, compare terms as well as price, and negotiate firmly. Then I coordinate with lawyers, notaries and buyers’ agents through to completion.',
+  },
+];
+
+const timeline = [
+  { when: '4–8 weeks before', what: 'Market evaluation, pricing strategy and preparation plan.' },
+  { when: '2–4 weeks before', what: 'Repairs, staging, photography, floor plans and listing documents.' },
+  { when: 'Launch', what: 'Listing goes live, with showings, open houses and buyer agent outreach.' },
+  { when: 'Offers', what: 'Review, negotiate and accept the best offer for you.' },
+  { when: 'Subjects & completion', what: 'Buyer removes subjects, funds transfer and you hand over the keys.' },
+];
+
+const costs = [
+  'Real estate commission (agreed in advance in your listing contract)',
+  'Legal or notary fees for the sale',
+  'Mortgage discharge and any prepayment penalty',
+  'Property tax and strata fee adjustments',
+  'Moving costs and any pre-sale preparation',
+];
+---
+
+<Base
+  title="Selling Your Home in Vancouver"
+  description="Thinking of selling in Kitsilano or Vancouver's Westside? Learn how Steven Toth prices, prepares and markets homes to sell for top dollar. Request a free, no-obligation home evaluation."
+>
+  <PageHero
+    eyebrow="Selling"
+    title="Sell with confidence, and for the right price"
+    lede="A thoughtful pricing strategy, a well-prepared home and marketing that reaches the right buyers. That’s how great sales happen."
+  >
+    <p><a class="btn btn--primary" href="/contact?intent=sell">Get a free home evaluation</a></p>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">My approach</span>
+      <h2>Four things that make the difference</h2>
+      <div class="grid grid--2 pillars">
+        {
+          pillars.map((p, i) => (
+            <div class="card">
+              <span class="num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container grid grid--2 split">
+      <div>
+        <span class="eyebrow">Timeline</span>
+        <h2>What to expect</h2>
+        <p class="lede">Every sale is different, but most follow a rhythm like this.</p>
+        <dl class="timeline">
+          {
+            timeline.map((t) => (
+              <div>
+                <dt>{t.when}</dt>
+                <dd>{t.what}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+      <div class="card">
+        <h3>Seller’s closing costs</h3>
+        <p>Budget for these so there are no surprises on completion day:</p>
+        <ul class="check-list">{costs.map((c) => <li>{c}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="What’s your home worth today?" text="Get a no-obligation market evaluation based on real comparable sales in your neighbourhood." href="/contact?intent=sell" label="Request an evaluation" />
+</Base>
+
+<style>
+  .pillars {
+    margin-top: 40px;
+  }
+  .pillars p {
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .num {
+    display: block;
+    font-family: var(--font-display);
+    color: var(--sunset);
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+  .split {
+    align-items: start;
+  }
+  .timeline {
+    margin: 32px 0 0;
+  }
+  .timeline div {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+    border-top: 1px solid var(--sand-deep);
+  }
+  .timeline dt {
+    font-weight: 600;
+    color: var(--sea);
+  }
+  .timeline dd {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 520px) {
+    .timeline div {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

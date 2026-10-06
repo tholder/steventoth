@@ -1,0 +1,94 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { neighbourhoods } from '../../data/neighbourhoods';
+import { site } from '../../data/site';
+
+const itemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: neighbourhoods.map((n, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: n.name,
+    url: `${site.url}/neighbourhoods/${n.slug}`,
+  })),
+};
+---
+
+<Base
+  title="Vancouver Neighbourhood Guides"
+  description="Local guides to Kitsilano, Point Grey, Dunbar, Kerrisdale, Arbutus Ridge, Shaughnessy, Fairview, Mount Pleasant and Downtown Vancouver: lifestyle, housing and who each area suits."
+  jsonLd={[itemList]}
+>
+  <PageHero
+    eyebrow="Neighbourhoods"
+    title="Find your corner of Vancouver"
+    lede="Every neighbourhood has its own personality. Here’s an insider’s look at the areas I know best, starting with my own backyard in Kits."
+  />
+
+  <section class="section">
+    <div class="container grid grid--3">
+      {
+        neighbourhoods.map((n) => (
+          <a class="card hood" href={`/neighbourhoods/${n.slug}`}>
+            <h2>{n.name}</h2>
+            <p class="tag">{n.tagline}</p>
+            <p>{n.summary}</p>
+            <ul class="pills">
+              {n.goodFor.slice(0, 3).map((g) => (
+                <li>{g}</li>
+              ))}
+            </ul>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand title="Not sure which neighbourhood fits?" text="Tell me how you like to live and I’ll suggest a shortlist, with honest pros and cons." />
+</Base>
+
+<style>
+  .hood {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--ink);
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+  .hood:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+  }
+  .hood h2 {
+    font-size: 1.6rem;
+  }
+  .tag {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--sea);
+  }
+  .hood p:not(.tag) {
+    color: var(--ink-soft);
+    flex: 1;
+  }
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .pills li {
+    font-size: 0.8rem;
+    background: var(--sand);
+    border-radius: 999px;
+    padding: 4px 10px;
+  }
+</style>

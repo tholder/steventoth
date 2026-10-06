@@ -1,0 +1,176 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+const steps = [
+  {
+    title: 'Get clear on goals and budget',
+    text: 'We talk about how you live, what you need now and in five years, and what you’re comfortable spending. I can connect you with trusted mortgage professionals to get pre-approved, so you know your numbers and can act quickly.',
+  },
+  {
+    title: 'Choose your neighbourhood and home type',
+    text: 'Condo, townhouse, character home or detached? Kits or Kerrisdale? I’ll help you weigh lifestyle, schools, commute and future value, and set up a search that sends you the right listings first.',
+  },
+  {
+    title: 'Tour homes and do your homework',
+    text: 'We view homes together and I point out what’s easy to miss. For strata properties, that means reviewing minutes, depreciation reports, bylaws and the contingency reserve fund before you commit.',
+  },
+  {
+    title: 'Write a strong offer',
+    text: 'I’ll prepare a pricing strategy based on comparable sales and current competition, then negotiate on price, subjects and dates to protect your interests.',
+  },
+  {
+    title: 'Remove subjects and close',
+    text: 'Financing, inspection and document review usually happen during the subject period. Once subjects are removed, your lawyer or notary handles the transfer and you get the keys on possession day.',
+  },
+];
+
+const costs = [
+  { name: 'Deposit', text: 'Usually paid within 24 hours of subject removal or acceptance. It forms part of your down payment.' },
+  { name: 'Property Transfer Tax', text: 'A provincial tax paid on registration. First-time buyers and buyers of newly built homes may qualify for a full or partial exemption.' },
+  { name: 'Legal / notary fees', text: 'For the conveyance and mortgage documents, plus disbursements.' },
+  { name: 'Home inspection', text: 'Strongly recommended for most purchases, and often a condition of your offer.' },
+  { name: 'Adjustments', text: 'Prorated property taxes, strata fees and utilities between you and the seller.' },
+  { name: 'Insurance', text: 'Home insurance is required by lenders before completion, along with CMHC insurance if your down payment is under 20%.' },
+];
+
+const howTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to buy a home in Vancouver',
+  step: steps.map((s, i) => ({ '@type': 'HowToStep', position: i + 1, name: s.title, text: s.text })),
+};
+---
+
+<Base
+  title="Buying a Home in Vancouver"
+  description="Buying a condo, townhouse or house in Kitsilano or on Vancouver's Westside? A step-by-step guide to the buying process, closing costs and first-time buyer tips from REALTOR® Steven Toth."
+  jsonLd={[howTo]}
+>
+  <PageHero
+    eyebrow="Buying"
+    title="Buying a home in Vancouver, made clear"
+    lede="Vancouver’s market moves quickly and the details matter. Here’s how we’ll find the right home and get it at the right price, without the stress."
+  >
+    <p><a class="btn btn--primary" href="/contact?intent=buy">Share your wish list</a></p>
+  </PageHero>
+
+  <section class="section">
+    <div class="container narrow">
+      <span class="eyebrow">Step by step</span>
+      <h2>The buying process</h2>
+      <ol class="timeline">
+        {
+          steps.map((s) => (
+            <li>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--sand">
+    <div class="container">
+      <span class="eyebrow">Budget beyond the price</span>
+      <h2>Costs to plan for</h2>
+      <p class="lede">Closing costs in B.C. typically add a few percent to the purchase price. Here’s what to budget for.</p>
+      <div class="grid grid--3 costs">
+        {
+          costs.map((c) => (
+            <div class="card">
+              <h3>{c.name}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="note">
+        Rules and thresholds change regularly. I’ll confirm current exemptions, grants and programs such as the First
+        Home Savings Account and the RRSP Home Buyers’ Plan with you and your mortgage professional.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid--2 tips">
+      <div>
+        <span class="eyebrow">First-time buyers</span>
+        <h2>Buying your first home?</h2>
+        <p class="lede">You don’t need to know everything. That’s my job. A few things worth knowing early:</p>
+      </div>
+      <ul class="check-list">
+        <li>Get pre-approved before you start viewing seriously. It saves heartbreak.</li>
+        <li>In B.C., most residential purchases include a short <strong>rescission period</strong> after acceptance, which lets buyers back out for a small fee.</li>
+        <li>For condos, the strata’s health matters as much as the suite. We’ll read the documents together.</li>
+        <li>Think about resale: layout, exposure, parking and storage all affect future value.</li>
+        <li>Budget for moving, furnishings and a cushion for the unexpected.</li>
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title="Ready to start your search?" text="Tell me about your ideal home: neighbourhood, budget, must-haves. I’ll put together a plan." href="/contact?intent=buy" label="Share your wish list" />
+</Base>
+
+<style>
+  .narrow {
+    max-width: 860px;
+  }
+  .timeline {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+    margin: 40px 0 0;
+  }
+  .timeline li {
+    counter-increment: step;
+    position: relative;
+    padding: 0 0 36px 72px;
+    border-left: 2px solid var(--line);
+    margin-left: 22px;
+  }
+  .timeline li:last-child {
+    border-left-color: transparent;
+    padding-bottom: 0;
+  }
+  .timeline li::before {
+    content: counter(step);
+    position: absolute;
+    left: -23px;
+    top: -4px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--sea-deep);
+    color: var(--sand);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+  }
+  .timeline h3 {
+    margin-bottom: 0.4em;
+  }
+  .timeline p {
+    color: var(--ink-soft);
+  }
+  .costs {
+    margin-top: 40px;
+  }
+  .costs p {
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .note {
+    margin-top: 32px;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    max-width: 75ch;
+  }
+  .tips {
+    align-items: start;
+  }
+</style>

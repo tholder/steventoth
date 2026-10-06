@@ -1,0 +1,17 @@
+---
+// North Shore mountain silhouette, layered for depth.
+import type { HTMLAttributes } from 'astro/types';
+type Props = HTMLAttributes<'svg'>;
+// Spread rest so the parent's scoped-style attribute reaches the <svg>.
+const { class: className, ...rest } = Astro.props;
+---
+
+<svg class={className} {...rest} viewBox="0 0 1440 260" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+  <path
+    d="M0 180 L90 120 L150 150 L240 70 L330 140 L400 105 L470 150 L560 60 L640 120 L700 95 L790 160 L880 85 L960 135 L1040 50 L1130 125 L1200 100 L1290 150 L1370 95 L1440 130 V260 H0 Z"
+    style="fill: var(--ridge-far, currentColor); opacity: var(--ridge-far-opacity, 0.35)"></path>
+  <path
+    d="M0 210 L120 150 L200 185 L310 125 L420 190 L520 140 L610 185 L720 130 L820 195 L930 145 L1030 185 L1140 135 L1250 190 L1350 150 L1440 175 V260 H0 Z"
+    style="fill: var(--ridge-mid, currentColor); opacity: var(--ridge-mid-opacity, 0.6)"></path>
+  <path d="M0 236 C240 220 480 246 720 232 C960 218 1200 244 1440 228 V260 H0 Z" fill="currentColor"></path>
+</svg>

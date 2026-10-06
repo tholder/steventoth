@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /contact/thanks
+
+Sitemap: https://www.steventoth.ca/sitemap-index.xml

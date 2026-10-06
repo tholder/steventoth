@@ -1,0 +1,45 @@
+---
+import Mountains from './Mountains.astro';
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+}
+const { eyebrow, title, lede } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="container">
+    <slot name="breadcrumb" />
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h1>{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+    <slot />
+  </div>
+  <Mountains class="ridge" />
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    background: linear-gradient(180deg, var(--sand) 0%, #f2e6d3 100%);
+    padding-top: clamp(56px, 8vw, 104px);
+    padding-bottom: clamp(96px, 12vw, 150px);
+    overflow: hidden;
+  }
+  .page-hero h1 {
+    max-width: 18ch;
+  }
+  .ridge {
+    --ridge-far: #7fa3b0;
+    --ridge-far-opacity: 0.55;
+    --ridge-mid: #3f6f80;
+    --ridge-mid-opacity: 0.5;
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: clamp(60px, 9vw, 120px);
+    color: var(--paper);
+  }
+</style>

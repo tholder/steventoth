@@ -1,0 +1,157 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { neighbourhoods, neighbourhoodBySlug, type Neighbourhood } from '../../data/neighbourhoods';
+import { site } from '../../data/site';
+
+export const getStaticPaths = (() =>
+  neighbourhoods.map((n) => ({ params: { slug: n.slug }, props: { n } }))) satisfies GetStaticPaths;
+
+const { n } = Astro.props as { n: Neighbourhood };
+const nearby = n.nearby.map((s) => neighbourhoodBySlug[s]).filter(Boolean);
+const isHome = n.slug === 'kitsilano';
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'Neighbourhoods', item: `${site.url}/neighbourhoods` },
+    { '@type': 'ListItem', position: 3, name: n.name, item: `${site.url}/neighbourhoods/${n.slug}` },
+  ],
+};
+const place = {
+  '@context': 'https://schema.org',
+  '@type': 'Place',
+  name: `${n.name}, Vancouver`,
+  description: n.summary,
+  containedInPlace: { '@type': 'City', name: 'Vancouver, BC' },
+};
+---
+
+<Base
+  title={`${n.name} Real Estate & Neighbourhood Guide`}
+  description={`Thinking of buying or selling in ${n.name}, Vancouver? ${n.summary} Local insight from ${isHome ? 'Kits resident and ' : ''}REALTOR® Steven Toth.`}
+  jsonLd={[breadcrumb, place]}
+>
+  <PageHero eyebrow={isHome ? 'Steven’s home neighbourhood' : 'Neighbourhood guide'} title={n.name} lede={n.tagline}>
+    <nav slot="breadcrumb" aria-label="Breadcrumb" class="crumbs">
+      <a href="/">Home</a> / <a href="/neighbourhoods">Neighbourhoods</a> / <span aria-current="page">{n.name}</span>
+    </nav>
+  </PageHero>
+
+  <section class="section">
+    <div class="container layout">
+      <article class="prose">
+        {n.intro.map((p, i) => <p class={i === 0 ? 'lede' : undefined}>{p}</p>)}
+
+        <h2>Highlights</h2>
+        <ul class="check-list">{n.highlights.map((h) => <li>{h}</li>)}</ul>
+
+        <h2>Homes in {n.name}</h2>
+        <p>{n.housing}</p>
+        <p>
+          Prices vary a lot by street, building and condition. For a current read on what’s selling and for how much,
+          <a href={`/contact?area=${n.slug}`}>ask me for a neighbourhood market snapshot</a>.
+        </p>
+      </article>
+
+      <aside class="side">
+        <div class="card">
+          <h2 class="side-title">Great for</h2>
+          <ul class="pills">{n.goodFor.map((g) => <li>{g}</li>)}</ul>
+        </div>
+        <div class="card side-cta">
+          <h2 class="side-title">Looking in {n.name}?</h2>
+          <p>Tell me what you’re after and I’ll send you listings that fit, as soon as they come up.</p>
+          <a class="btn btn--primary" href={`/contact?area=${n.slug}`}>Get in touch</a>
+        </div>
+        {
+          nearby.length > 0 && (
+            <div class="card">
+              <h2 class="side-title">Nearby</h2>
+              <ul class="nearby">
+                {nearby.map((m) => (
+                  <li>
+                    <a href={`/neighbourhoods/${m.slug}`}>{m.name}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+
+  <CtaBand title={`Buying or selling in ${n.name}?`} text="I’ll give you an honest take on value, timing and the right strategy for your move." href={`/contact?area=${n.slug}`} />
+</Base>
+
+<style>
+  .crumbs {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+  .crumbs a {
+    color: var(--ink-soft);
+  }
+  .layout {
+    display: grid;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 1fr 340px;
+      gap: 72px;
+    }
+    .side {
+      position: sticky;
+      top: 104px;
+    }
+  }
+  .side {
+    display: grid;
+    gap: 20px;
+  }
+  .side-title {
+    font-size: 1.2rem;
+  }
+  .side-cta {
+    background: var(--sea-deep);
+    border-color: var(--sea-deep);
+    color: var(--sand);
+  }
+  .side-cta p {
+    color: #c9d7dc;
+  }
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .pills li {
+    font-size: 0.85rem;
+    background: var(--sand);
+    border-radius: 999px;
+    padding: 5px 12px;
+  }
+  .nearby {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .nearby li {
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+  }
+  .nearby li:first-child {
+    border-top: 0;
+  }
+</style>
