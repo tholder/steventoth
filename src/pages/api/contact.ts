@@ -77,7 +77,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 
   const text = filled.map(([k, v]) => `${k}: ${v}`).join('\n');
   const html = `
-    <div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#102a3a;max-width:640px">
+    <div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#17291f;max-width:640px">
       <h2 style="margin:0 0 16px;font-family:Georgia,serif">New enquiry from steventoth.ca</h2>
       <table cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;font-size:15px">
         ${filled

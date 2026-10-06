@@ -2,17 +2,17 @@
 @import '@fontsource-variable/inter';
 
 :root {
-  --ink: #102a3a;
-  --ink-soft: #3d5566;
-  --sea: #1f5f75;
-  --sea-deep: #123044;
-  --sea-light: #d9e8ec;
-  --sand: #f6efe3;
-  --sand-deep: #ebe0cc;
-  --paper: #fbf8f3;
-  --sunset: #d9714e;
-  --sunset-deep: #b9573a;
-  --line: #e2d8c7;
+  --ink: #17291f;
+  --ink-soft: #45594c;
+  --forest: #2c6a4a;
+  --forest-deep: #143726;
+  --moss-light: #dcebd9;
+  --mist: #e2ecd8;
+  --mist-deep: #cfdec2;
+  --paper: #f4f8ee;
+  --fern: #3f7f32;
+  --fern-deep: #2f6425;
+  --line: #d0dcc3;
   --white: #ffffff;
 
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
@@ -20,7 +20,7 @@
 
   --radius: 14px;
   --radius-lg: 24px;
-  --shadow: 0 1px 2px rgb(16 42 58 / 0.06), 0 8px 24px rgb(16 42 58 / 0.08);
+  --shadow: 0 1px 2px rgb(20 45 30 / 0.06), 0 8px 24px rgb(20 45 30 / 0.08);
   --container: 1180px;
   --gutter: clamp(16px, 4vw, 40px);
 }
@@ -96,16 +96,16 @@ p {
 }
 
 a {
-  color: var(--sea);
+  color: var(--forest);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
 a:hover {
-  color: var(--sunset-deep);
+  color: var(--fern-deep);
 }
 
 :focus-visible {
-  outline: 3px solid var(--sunset);
+  outline: 3px solid var(--fern);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -121,16 +121,16 @@ a:hover {
   padding-block: clamp(64px, 9vw, 120px);
 }
 
-.section--sand {
-  background: var(--sand);
+.section--mist {
+  background: var(--mist);
 }
 
-.section--sea {
-  background: var(--sea-deep);
-  color: var(--sand);
+.section--forest {
+  background: var(--forest-deep);
+  color: var(--mist);
 }
-.section--sea a:not(.btn) {
-  color: var(--sand);
+.section--forest a:not(.btn) {
+  color: var(--mist);
 }
 
 .eyebrow {
@@ -139,11 +139,11 @@ a:hover {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--sunset-deep);
+  color: var(--fern-deep);
   margin-bottom: 1rem;
 }
-.section--sea .eyebrow {
-  color: #f0a283;
+.section--forest .eyebrow {
+  color: #a9d18e;
 }
 
 .lede {
@@ -151,8 +151,8 @@ a:hover {
   color: var(--ink-soft);
   max-width: 62ch;
 }
-.section--sea .lede {
-  color: #c9d7dc;
+.section--forest .lede {
+  color: #c8d8cc;
 }
 
 .btn {
@@ -179,11 +179,11 @@ a:hover {
   transform: translateY(-1px);
 }
 .btn--primary {
-  background: var(--sunset);
+  background: var(--fern);
   color: var(--white);
 }
 .btn--primary:hover {
-  background: var(--sunset-deep);
+  background: var(--fern-deep);
   color: var(--white);
 }
 .btn--ghost {
@@ -195,13 +195,13 @@ a:hover {
   border-color: var(--ink);
   color: var(--paper);
 }
-.section--sea .btn--ghost {
-  color: var(--sand);
+.section--forest .btn--ghost {
+  color: var(--mist);
 }
-.section--sea .btn--ghost:hover {
-  background: var(--sand);
-  border-color: var(--sand);
-  color: var(--sea-deep);
+.section--forest .btn--ghost:hover {
+  background: var(--mist);
+  border-color: var(--mist);
+  color: var(--forest-deep);
 }
 
 .grid {
@@ -273,8 +273,8 @@ a:hover {
   width: 1.1em;
   height: 1.1em;
   border-radius: 50%;
-  background: var(--sea-light)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%231f5f75' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+  background: var(--moss-light)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%232c6a4a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
     center / 75% no-repeat;
 }
 

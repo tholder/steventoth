@@ -22,7 +22,7 @@ const { eyebrow, title, lede } = Astro.props;
 <style>
   .page-hero {
     position: relative;
-    background: linear-gradient(180deg, var(--sand) 0%, #f2e6d3 100%);
+    background: linear-gradient(180deg, #e6efdc 0%, #d3e3c7 100%);
     padding-top: clamp(56px, 8vw, 104px);
     padding-bottom: clamp(96px, 12vw, 150px);
     overflow: hidden;
@@ -31,10 +31,12 @@ const { eyebrow, title, lede } = Astro.props;
     max-width: 18ch;
   }
   .ridge {
-    --ridge-far: #7fa3b0;
+    --ridge-far: #8fb39a;
     --ridge-far-opacity: 0.55;
-    --ridge-mid: #3f6f80;
-    --ridge-mid-opacity: 0.5;
+    --ridge-mid: #3d6e50;
+    --ridge-mid-opacity: 0.55;
+    --ridge-trees: #1f4a33;
+    --ridge-trees-opacity: 0.9;
     position: absolute;
     left: 0;
     bottom: -1px;
